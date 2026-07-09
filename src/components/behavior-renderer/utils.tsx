@@ -20,8 +20,8 @@ export function toReactNode(
   }
 
   if (!(typeof element === 'object' && element !== null)) {
-    if (typeof element === 'string' && /^{{.+}}$/.test(element)) {
-      // @todo Заменять на `<Value of={element} />` прямо тут?
+    if (typeof element === 'string' && isExpressionNotation(element)) {
+      // @todo Заменять на `<Display of={element} />` прямо тут?
       return element;
     }
 
