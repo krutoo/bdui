@@ -16,7 +16,7 @@ describe('evaluate', () => {
     assert.equal(true, evaluate('2 <= 3'));
     assert.equal(false, evaluate('10 <= 3'));
     assert.equal(false, evaluate('10 <= (3 + 2)'));
-    assert.equal(false, evaluate('10 >= (3 + 2)'));
+    assert.equal(true, evaluate('10 >= (3 + 2)'));
     assert.equal(true, evaluate('19 == 19'));
     assert.equal(false, evaluate('11 != 11'));
 

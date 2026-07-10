@@ -9,7 +9,7 @@ export interface TaskQueueConfig {
   };
 }
 
-interface Task {
+export interface Task {
   type: 'fetch';
   request: HttpRequest;
   callback: (payload: { response: HttpResponse }) => void;

@@ -39,6 +39,7 @@ export const Form: CoreComponent<'Form', FormProps> = ({
             return;
           }
 
+          // @todo paramPath который имеет приоритет над name и в котором может быть `foo.bar[2].baz`
           const values = Object.fromEntries(
             [...registry.values()]
               .filter(item => (item as { formId?: string }).formId === id)
