@@ -1,6 +1,6 @@
 import { debounce } from '@krutoo/utils';
+import { Queue } from '#shared/queue';
 import type { HttpClient, HttpRequest, HttpResponse } from '../types.ts';
-import { Queue } from './queue.ts';
 
 export interface TaskQueueConfig {
   chunkSize?: number;

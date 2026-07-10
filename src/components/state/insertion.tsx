@@ -1,8 +1,8 @@
 import { useContext, useEffect } from 'react';
+import { set } from '#shared/set';
 import { BehaviorContext } from '../../mod.ts';
 import type { CoreComponent } from '../../types.ts';
 import { fill } from '../../utils/param.ts';
-import { set } from '../../utils/set.ts';
 import type { StateInsertionProps } from './types.ts';
 
 /**

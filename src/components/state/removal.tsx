@@ -1,7 +1,7 @@
 import { useContext, useEffect } from 'react';
+import { unset } from '#shared/unset';
 import { BehaviorContext } from '../../mod.ts';
 import type { CoreComponent } from '../../types.ts';
-import { unset } from '../../utils/unset.ts';
 import type { StateRemovalProps } from './types.ts';
 
 /**

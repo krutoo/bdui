@@ -1,5 +1,5 @@
 import { type ReactNode, isValidElement } from 'react';
-import { isPrimitive } from './is-primitive.ts';
+import { isObject } from '#shared/is-object';
 
 /**
  * Checks that given value is valid `ReactNode`.
@@ -8,5 +8,5 @@ import { isPrimitive } from './is-primitive.ts';
  */
 export function isReactNode(value: unknown): value is ReactNode {
   // @todo как быть если iterable?
-  return isValidElement(value) || (isPrimitive(value) && typeof value !== 'symbol');
+  return isValidElement(value) || (!isObject(value) && typeof value !== 'symbol');
 }

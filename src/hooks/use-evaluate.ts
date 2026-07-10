@@ -1,7 +1,7 @@
 import { useCallback, useContext } from 'react';
+import { evaluate } from '#shared/expression';
 import { BehaviorContext } from '../context/behavior.ts';
 import { ExpressionContext } from '../context/expression.ts';
-import { evaluate } from '../utils/expression.ts';
 
 /**
  * Checks that value is in expression notation like `{{...}}`.

@@ -1,5 +1,5 @@
+import { set } from '#shared/set';
 import type { ParamDefinition, ParamType } from '../types.ts';
-import { set } from './set.ts';
 
 export const parsers: Record<ParamType, (value: any) => any> = {
   int: value => parseInt(value, 10),

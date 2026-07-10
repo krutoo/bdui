@@ -1,3 +1,13 @@
 {
-  "extends": "@krutoo/presets/tsconfig.check.json"
+  "extends": "@krutoo/presets/tsconfig.check.json",
+  "compilerOptions": {
+    "paths": {
+      "#shared/set": ["./src/shared/set.ts"],
+      "#shared/unset": ["./src/shared/unset.ts"],
+      "#shared/is-object": ["./src/shared/is-object.ts"],
+      "#shared/react": ["./src/shared/react.ts"],
+      "#shared/queue": ["./src/shared/queue.ts"],
+      "#shared/expression": ["./src/shared/expression.ts"]
+    }
+  }
 }
