@@ -85,7 +85,7 @@ export const Form: CoreComponent<'Form', FormProps> = ({
     };
   }, [id, resource, method, onSubmitDone, onSubmitFail, store, elements, client]);
 
-  return <FormContext.Provider value={{ formId: id }}>{children}</FormContext.Provider>;
+  return <FormContext value={{ formId: id }}>{children}</FormContext>;
 };
 
 Form.displayName = 'Form';

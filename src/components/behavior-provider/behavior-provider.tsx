@@ -1,5 +1,6 @@
 import { type FC, useEffect, useMemo } from 'react';
-import { useStableCallback } from '@krutoo/utils/react';
+import { useLatestRef, useStableCallback } from '@krutoo/utils/react';
+import type { CoreDependencies } from '#types/core';
 import type { ResponseReplacersRetriever } from '#types/http';
 import { BehaviorContext, type BehaviorContextValue } from '../../context/behavior.ts';
 import { createFetchHttpClient } from '../../utils/http-client.ts';
@@ -25,6 +26,8 @@ export const BehaviorProvider: FC<BehaviorProviderProps> = props => {
     return http?.client ?? createFetchHttpClient();
   }, [http?.client]);
 
+  const clientRef = useLatestRef(client);
+
   const retrieveReplacers = useStableCallback(
     http?.retrieveReplacers ?? defaults.http.retrieveReplacers,
   );
@@ -33,28 +36,36 @@ export const BehaviorProvider: FC<BehaviorProviderProps> = props => {
     return new ElementRegistryImpl();
   }, []);
 
+  const tasks: TaskQueue = useMemo(() => {
+    return new TaskQueue({
+      http: {
+        client: () => clientRef.current,
+      },
+    });
+  }, [clientRef]);
+
+  const dependencies: CoreDependencies = useMemo(() => {
+    return {
+      http: {
+        client,
+        retrieveReplacers,
+      },
+    };
+  }, [client, retrieveReplacers]);
+
   const context = useMemo<BehaviorContextValue>(() => {
     return {
       components,
       elements,
       events: elements.events,
-      tasks: new TaskQueue({
-        http: {
-          client,
-        },
-      }),
-      dependencies: {
-        http: {
-          client,
-          retrieveReplacers,
-        },
-      },
+      tasks,
+      dependencies,
     };
-  }, [components, elements, client, retrieveReplacers]);
+  }, [components, elements, tasks, dependencies]);
 
   useEffect(() => {
-    return context.tasks.init();
-  }, [context]);
+    return tasks.init();
+  }, [tasks]);
 
-  return <BehaviorContext.Provider value={context}>{children}</BehaviorContext.Provider>;
+  return <BehaviorContext value={context}>{children}</BehaviorContext>;
 };

@@ -5,7 +5,7 @@ import type { HttpClient, HttpRequest, HttpResponse } from '#types/http';
 export interface TaskQueueConfig {
   chunkSize?: number;
   http: {
-    client: HttpClient;
+    client: HttpClient | (() => HttpClient);
   };
 }
 
@@ -33,12 +33,12 @@ export class TaskQueue extends Queue<Task> {
     chunkSize: number;
   };
 
-  protected httpClient: HttpClient;
+  protected getHttpClient: () => HttpClient;
 
-  constructor({ chunkSize = 5, http }: TaskQueueConfig) {
+  constructor({ chunkSize = 5, http: { client } }: TaskQueueConfig) {
     super();
     this.options = { chunkSize };
-    this.httpClient = http.client;
+    this.getHttpClient = typeof client === 'function' ? client : () => client;
   }
 
   init(): VoidFunction {
@@ -63,7 +63,7 @@ export class TaskQueue extends Queue<Task> {
 
       await Promise.all(
         chunk.map(item =>
-          this.httpClient
+          this.getHttpClient()
             .request(item.request.url, {
               method: item.request.method,
               headers: {
