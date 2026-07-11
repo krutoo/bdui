@@ -1,5 +1,5 @@
 {
-  "name": "bdui",
+  "name": "@krutoo/bdui",
   "version": "0.0.0",
   "type": "module",
   "description": "Backend-driven UI",
@@ -39,6 +39,9 @@
     "tsc-alias": "^1.9.0",
     "typescript": "^6.0.3"
   },
+  "files": [
+    "dist"
+  ],
   "exports": {
     ".": "./dist/mod.js"
   },
