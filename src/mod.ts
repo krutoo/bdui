@@ -32,8 +32,8 @@ export {
 // components
 export { CoreComponents, type CoreComponentsMap } from './core-components.ts';
 export { Action, type ActionProps } from './components/action/mod.ts';
-export { Conditional, type ConditionalProps } from './components/conditional/mod.ts';
-export { Deferred, type DeferredProps } from './components/deferred/mod.ts';
+export { Condition, type ConditionProps } from './components/condition/mod.ts';
+export { Defer, type DeferProps } from './components/defer/mod.ts';
 export { Display, type DisplayProps } from './components/display/mod.ts';
 export { Each, type EachProps } from './components/each/mod.ts';
 export { Form, type FormProps } from './components/form/mod.ts';

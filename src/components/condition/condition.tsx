@@ -2,14 +2,14 @@ import { useCallback, useContext, useEffect, useState } from 'react';
 import type { CoreComponent } from '#types/core';
 import { BehaviorContext } from '../../context/behavior.ts';
 import { useEvaluate } from '../../hooks/use-evaluate.ts';
-import type { ConditionalProps } from './types.ts';
+import type { ConditionProps } from './types.ts';
 
 /**
  * Renders own children only if expression in `if` prop is truthy.
  * @param props Props.
  * @returns `ReactNode`.
  */
-export const Conditional: CoreComponent<'Conditional', ConditionalProps> = ({
+export const Condition: CoreComponent<'Condition', ConditionProps> = ({
   if: expression = '',
   children,
 }) => {
@@ -40,5 +40,5 @@ export const Conditional: CoreComponent<'Conditional', ConditionalProps> = ({
   return children;
 };
 
-Conditional.displayName = 'Conditional';
-Conditional.skipExpressionIntercept = true;
+Condition.displayName = 'Condition';
+Condition.skipExpressionIntercept = true;

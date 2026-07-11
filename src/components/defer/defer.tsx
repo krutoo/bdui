@@ -5,21 +5,21 @@ import { BehaviorContext } from '../../context/behavior.ts';
 import type { CoreComponent } from '../../mod.ts';
 import { buildRequest } from '../../utils/build-request.ts';
 import { BehaviorRenderer } from '../behavior-renderer/mod.ts';
-import type { DeferredProps } from './types.ts';
+import type { DeferProps } from './types.ts';
 
 /**
- * Deferred tree. After mount make requests and renders BDUI from response.
- * Renders stub before request will be resolved/rejected.
+ * Deferred markup. After mount make request and renders BDUI from response.
+ * Renders children as stub until request will be resolved/rejected.
  * @param props Props.
  * @returns `ReactNode`.
  */
-export const Deferred: CoreComponent<'Deferred', DeferredProps> = ({
+export const Defer: CoreComponent<'Defer', DeferProps> = ({
   id,
   resource,
   method,
   params,
   children,
-}: DeferredProps) => {
+}: DeferProps) => {
   const { components, elements, tasks, dependencies } = useContext(BehaviorContext);
   const { http } = dependencies;
   const { retrieveReplacers } = http;
@@ -82,5 +82,5 @@ export const Deferred: CoreComponent<'Deferred', DeferredProps> = ({
   return <>{state.content ?? children}</>;
 };
 
-Deferred.displayName = 'Deferred';
-Deferred.skipExpressionIntercept = true;
+Defer.displayName = 'Defer';
+Defer.skipExpressionIntercept = true;

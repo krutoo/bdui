@@ -1,7 +1,7 @@
 import { type ComponentType, Fragment } from 'react';
 import { Action } from './components/action/mod.ts';
-import { Conditional } from './components/conditional/mod.ts';
-import { Deferred } from './components/deferred/mod.ts';
+import { Condition } from './components/condition/mod.ts';
+import { Defer } from './components/defer/mod.ts';
 import { Display } from './components/display/mod.ts';
 import { Each } from './components/each/mod.ts';
 import { Form } from './components/form/mod.ts';
@@ -16,8 +16,8 @@ export const CoreComponents: CoreComponentsMap = {
   Fragment,
   [Action.displayName]: Action,
   [Action.Sequence.displayName]: Action.Sequence,
-  [Conditional.displayName]: Conditional,
-  [Deferred.displayName]: Deferred,
+  [Condition.displayName]: Condition,
+  [Defer.displayName]: Defer,
   [Form.displayName]: Form,
   [Query.displayName]: Query,
   [Each.displayName]: Each,

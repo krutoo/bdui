@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import type { RequestParamDefinition } from '#types/http';
 
-export interface DeferredProps {
+export interface DeferProps {
   id?: string;
   resource?: string;
   method?: string;

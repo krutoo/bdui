@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-export interface ConditionalProps {
+export interface ConditionProps {
   if?: string;
   children?: ReactNode;
 }
