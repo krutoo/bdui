@@ -20,7 +20,7 @@ export const Defer: CoreComponent<'Defer', DeferProps> = ({
   params,
   children,
 }: DeferProps) => {
-  const { components, elements, tasks, dependencies } = useContext(BehaviorContext);
+  const { elements, tasks, dependencies } = useContext(BehaviorContext);
   const { http } = dependencies;
   const { retrieveReplacers } = http;
   const store = useMemo(() => createStore({ content: null as ReactNode }), []);
@@ -60,7 +60,7 @@ export const Defer: CoreComponent<'Defer', DeferProps> = ({
       actions: {
         fill(tree: Element | Primitive) {
           store.set({
-            content: <BehaviorRenderer components={components} tree={tree} />,
+            content: <BehaviorRenderer tree={tree} />,
           });
         },
         invalidate() {
@@ -77,7 +77,7 @@ export const Defer: CoreComponent<'Defer', DeferProps> = ({
     return () => {
       elements.delete(id);
     };
-  }, [id, resource, method, params, elements, components, tasks, store, retrieveReplacers]);
+  }, [id, resource, method, params, elements, tasks, store, retrieveReplacers]);
 
   return <>{state.content ?? children}</>;
 };
