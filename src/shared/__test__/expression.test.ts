@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, test } from 'node:test';
-import { evaluate } from './expression.ts';
+import { evaluate } from '../expression.ts';
 
 describe('evaluate', () => {
   test('should correctly evaluate expressions', () => {

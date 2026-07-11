@@ -33,5 +33,5 @@ export function unset<T>(target: T, path: string): T {
     delete current[lastKey];
   }
 
-  return current;
+  return target;
 }

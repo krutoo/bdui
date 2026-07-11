@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, test } from 'node:test';
-import { fill } from './param.ts';
+import { fill } from '../param.ts';
 
 describe('fill', () => {
   test('works correctly with no initial value', () => {
