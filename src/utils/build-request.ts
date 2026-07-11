@@ -1,9 +1,5 @@
-import type { HttpRequest, ParamDefinition } from '../types.ts';
+import type { HttpRequest, RequestParamDefinition } from '#types/http';
 import { fill } from './param.ts';
-
-export interface RequestParamDefinition extends ParamDefinition {
-  in: 'query' | 'header' | 'body';
-}
 
 export interface HttpRequestDefinition {
   method?: string;

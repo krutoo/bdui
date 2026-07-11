@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
+import type { CoreComponent } from '#types/core';
 import { BehaviorContext } from '../../context/behavior.ts';
 import { useEvaluate } from '../../hooks/use-evaluate.ts';
-import type { CoreComponent } from '../../types.ts';
 import type { ConditionalProps } from './types.ts';
 
 /**

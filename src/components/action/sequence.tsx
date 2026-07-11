@@ -1,7 +1,7 @@
 import { useContext, useEffect, useMemo } from 'react';
+import type { CoreComponent } from '#types/core';
 import { ActionSequenceContext, type ActionSequenceContextValue } from '../../context/action.ts';
 import { BehaviorContext } from '../../mod.ts';
-import type { CoreComponent } from '../../types.ts';
 import type { ActionSequenceProps } from './types.ts';
 
 /**
@@ -14,7 +14,7 @@ export const ActionSequence: CoreComponent<'Action.Sequence', ActionSequenceProp
   id,
   children,
 }) => {
-  const { registry } = useContext(BehaviorContext);
+  const { elements } = useContext(BehaviorContext);
   const order = useMemo(() => new Set<string>(), []);
 
   useEffect(() => {
@@ -22,12 +22,12 @@ export const ActionSequence: CoreComponent<'Action.Sequence', ActionSequenceProp
       return;
     }
 
-    registry.set(id, {
+    elements.set(id, {
       type: 'Action.Sequence',
       id,
       actions: {
         async run() {
-          const actions = [...order].map(actionId => registry.get(actionId));
+          const actions = [...order].map(actionId => elements.get(actionId));
 
           for (const action of actions) {
             if (action?.type === 'action') {
@@ -39,9 +39,9 @@ export const ActionSequence: CoreComponent<'Action.Sequence', ActionSequenceProp
     });
 
     return () => {
-      registry.delete(id);
+      elements.delete(id);
     };
-  }, [id, order, registry]);
+  }, [id, order, elements]);
 
   const context = useMemo<ActionSequenceContextValue>(() => {
     return {

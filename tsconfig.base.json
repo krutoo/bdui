@@ -1,6 +1,10 @@
 {
   "compilerOptions": {
     "paths": {
+      "#types/dto": ["./src/types/dto.ts"],
+      "#types/http": ["./src/types/http.ts"],
+      "#types/core": ["./src/types/core.ts"],
+
       "#shared/set": ["./src/shared/set.ts"],
       "#shared/unset": ["./src/shared/unset.ts"],
       "#shared/is-object": ["./src/shared/is-object.ts"],

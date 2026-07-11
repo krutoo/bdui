@@ -1,4 +1,4 @@
-import type { HttpClient } from '../types.ts';
+import type { HttpClient } from '#types/http';
 
 export interface FetchHttpClientConfig {
   /** Fetch implementation. */
@@ -20,6 +20,21 @@ export function createFetchHttpClient({
       return {
         ok: response.ok,
         json: () => response.clone().json(),
+      };
+    },
+  };
+}
+
+/**
+ * Creates new stub HTTP-Client.
+ * @returns Client.
+ */
+export function createStubHttpClient(): HttpClient {
+  return {
+    async request() {
+      return {
+        ok: false,
+        json: () => Promise.reject(new Error('No body')),
       };
     },
   };

@@ -7,7 +7,7 @@ import { StateRemoval } from './removal.tsx';
 import type { StateComponent } from './types.ts';
 
 export const State: StateComponent = ({ id, init: initialParams }) => {
-  const { registry } = useContext(BehaviorContext);
+  const { elements } = useContext(BehaviorContext);
 
   const store = useMemo(() => {
     return createStore(fill(undefined, initialParams ?? []));
@@ -19,7 +19,7 @@ export const State: StateComponent = ({ id, init: initialParams }) => {
       return;
     }
 
-    registry.set(id, {
+    elements.set(id, {
       type: 'State',
       id,
       store,
@@ -27,9 +27,9 @@ export const State: StateComponent = ({ id, init: initialParams }) => {
     });
 
     return () => {
-      registry.delete(id);
+      elements.delete(id);
     };
-  }, [id, registry, store]);
+  }, [id, elements, store]);
 
   return null;
 };

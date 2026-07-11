@@ -1,7 +1,8 @@
 import { type ReactNode, useContext, useEffect, useMemo, useSyncExternalStore } from 'react';
 import { createStore } from '@krutoo/utils/store';
+import type { Element, Primitive } from '#types/dto';
 import { BehaviorContext } from '../../context/behavior.ts';
-import type { CoreComponent, Element, Primitive } from '../../types.ts';
+import type { CoreComponent } from '../../mod.ts';
 import { buildRequest } from '../../utils/build-request.ts';
 import { BehaviorRenderer } from '../behavior-renderer/mod.ts';
 import type { DeferredProps } from './types.ts';
@@ -19,7 +20,7 @@ export const Deferred: CoreComponent<'Deferred', DeferredProps> = ({
   params,
   children,
 }: DeferredProps) => {
-  const { components, registry, tasks, dependencies } = useContext(BehaviorContext);
+  const { components, elements, tasks, dependencies } = useContext(BehaviorContext);
   const { http } = dependencies;
   const { retrieveReplacers } = http;
   const store = useMemo(() => createStore({ content: null as ReactNode }), []);
@@ -46,13 +47,13 @@ export const Deferred: CoreComponent<'Deferred', DeferredProps> = ({
           const replacers = await retrieveReplacers(response);
 
           for (const { elementId, tree } of replacers) {
-            registry.get(elementId)?.actions?.fill?.(tree);
+            elements.get(elementId)?.actions?.fill?.(tree);
           }
         },
       });
     };
 
-    registry.set(id, {
+    elements.set(id, {
       type: 'Deferred',
       id,
       store,
@@ -74,9 +75,9 @@ export const Deferred: CoreComponent<'Deferred', DeferredProps> = ({
     query();
 
     return () => {
-      registry.delete(id);
+      elements.delete(id);
     };
-  }, [id, resource, method, params, registry, components, tasks, store, retrieveReplacers]);
+  }, [id, resource, method, params, elements, components, tasks, store, retrieveReplacers]);
 
   return <>{state.content ?? children}</>;
 };

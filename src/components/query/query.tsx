@@ -1,7 +1,7 @@
 import { useContext, useEffect, useMemo } from 'react';
 import { createStore } from '@krutoo/utils/store';
+import type { CoreComponent } from '#types/core';
 import { BehaviorContext } from '../../context/behavior.ts';
-import type { CoreComponent } from '../../types.ts';
 import { buildRequest } from '../../utils/build-request.ts';
 import type { QueryProps } from './types.ts';
 
@@ -16,7 +16,7 @@ export const Query: CoreComponent<'Query', QueryProps> = ({
   resource,
   params,
 }: QueryProps) => {
-  const { registry, dependencies } = useContext(BehaviorContext);
+  const { elements, dependencies } = useContext(BehaviorContext);
   const { http } = dependencies;
   const { client } = http;
   const store = useMemo(() => createStore({ status: 'initial', data: null as any }), []);
@@ -26,7 +26,7 @@ export const Query: CoreComponent<'Query', QueryProps> = ({
       return;
     }
 
-    registry.set(id, {
+    elements.set(id, {
       type: 'Query',
       id,
       store,
@@ -49,9 +49,9 @@ export const Query: CoreComponent<'Query', QueryProps> = ({
 
     return () => {
       store.set({ status: 'initial', data: null });
-      registry.delete(id);
+      elements.delete(id);
     };
-  }, [id, method, resource, params, store, registry, client]);
+  }, [id, method, resource, params, store, elements, client]);
 
   return null;
 };

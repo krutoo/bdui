@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from 'react';
+import type { CoreComponent } from '#types/core';
 import { BehaviorContext } from '../../context/behavior.ts';
 import { ExpressionContext } from '../../context/expression.ts';
 import { useEvaluate } from '../../hooks/use-evaluate.ts';
-import type { CoreComponent } from '../../types.ts';
 import type { EachProps } from './types.ts';
 
 /**

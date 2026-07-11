@@ -1,9 +1,17 @@
 import { type FC, useEffect, useMemo } from 'react';
+import { useStableCallback } from '@krutoo/utils/react';
+import type { ResponseReplacersRetriever } from '#types/http';
 import { BehaviorContext, type BehaviorContextValue } from '../../context/behavior.ts';
-import type { RegistryItem } from '../../types.ts';
 import { createFetchHttpClient } from '../../utils/http-client.ts';
 import { TaskQueue } from '../../utils/task-queue.ts';
 import type { BehaviorProviderProps } from './types.ts';
+import { ElementRegistryImpl } from './utils.ts';
+
+const defaults = {
+  http: {
+    retrieveReplacers: (() => []) satisfies ResponseReplacersRetriever,
+  },
+};
 
 /**
  * Behavior provider for any BDUI-components.
@@ -12,51 +20,24 @@ import type { BehaviorProviderProps } from './types.ts';
  */
 export const BehaviorProvider: FC<BehaviorProviderProps> = props => {
   const { children, components, http } = props;
-  const { retrieveReplacersFromResponse } = http ?? {};
-  const client = useMemo(() => http?.client ?? createFetchHttpClient(), [http?.client]);
+
+  const client = useMemo(() => {
+    return http?.client ?? createFetchHttpClient();
+  }, [http?.client]);
+
+  const retrieveReplacers = useStableCallback(
+    http?.retrieveReplacers ?? defaults.http.retrieveReplacers,
+  );
+
+  const elements: ElementRegistryImpl = useMemo(() => {
+    return new ElementRegistryImpl();
+  }, []);
 
   const context = useMemo<BehaviorContextValue>(() => {
-    const map = new Map<string, RegistryItem>();
-    const registryListeners = new Set<VoidFunction>();
-    const anyStoreListeners = new Set<VoidFunction>();
-    const anyStoreFlushers = new Map<string, VoidFunction>();
-
-    const handleAnyStoreChange = () => {
-      anyStoreListeners.forEach(fn => fn());
-    };
-
     return {
       components,
-      registry: {
-        get(elementId) {
-          return map.get(elementId);
-        },
-        set(elementId, item) {
-          map.set(elementId, item);
-
-          if (item.store) {
-            anyStoreFlushers.set(elementId, item.store.subscribe(handleAnyStoreChange));
-          }
-
-          registryListeners.forEach(fn => fn());
-        },
-        delete(elementId) {
-          map.delete(elementId);
-          anyStoreFlushers.get(elementId)?.();
-          anyStoreFlushers.delete(elementId);
-          registryListeners.forEach(fn => fn());
-        },
-        subscribe(listener) {
-          registryListeners.add(listener);
-
-          return () => {
-            registryListeners.delete(listener);
-          };
-        },
-        values() {
-          return map.values();
-        },
-      },
+      elements,
+      events: elements.events,
       tasks: new TaskQueue({
         http: {
           client,
@@ -65,22 +46,11 @@ export const BehaviorProvider: FC<BehaviorProviderProps> = props => {
       dependencies: {
         http: {
           client,
-          retrieveReplacers: retrieveReplacersFromResponse ?? (() => []),
-        },
-      },
-      events: {
-        anyStoreChanged: {
-          subscribe(fn) {
-            anyStoreListeners.add(fn);
-
-            return () => {
-              anyStoreListeners.delete(fn);
-            };
-          },
+          retrieveReplacers,
         },
       },
     };
-  }, [components, client, retrieveReplacersFromResponse]);
+  }, [components, elements, client, retrieveReplacers]);
 
   useEffect(() => {
     return context.tasks.init();

@@ -25,7 +25,7 @@ import type { ActionComponent } from './types.ts';
  * ```
  */
 export const Action: ActionComponent = ({ id, type, target: target }) => {
-  const { registry } = useContext(BehaviorContext);
+  const { elements } = useContext(BehaviorContext);
   const { registerAction } = useContext(ActionSequenceContext);
 
   useEffect(() => {
@@ -33,18 +33,18 @@ export const Action: ActionComponent = ({ id, type, target: target }) => {
       return;
     }
 
-    registry.set(id, {
+    elements.set(id, {
       type: 'Action',
       id,
       actions: {
         run() {
-          const item = registry.get(target);
+          const item = elements.get(target);
 
           item?.actions?.[type]?.();
         },
       },
     });
-  }, [id, type, target, registry]);
+  }, [id, type, target, elements]);
 
   useEffect(() => {
     if (!id) {

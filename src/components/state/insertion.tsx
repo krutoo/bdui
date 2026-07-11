@@ -1,7 +1,7 @@
 import { useContext, useEffect } from 'react';
 import { set } from '#shared/set';
+import type { CoreComponent } from '#types/core';
 import { BehaviorContext } from '../../mod.ts';
-import type { CoreComponent } from '../../types.ts';
 import { fill } from '../../utils/param.ts';
 import type { StateInsertionProps } from './types.ts';
 
@@ -16,19 +16,19 @@ export const StateInsertion: CoreComponent<'State.Insertion', StateInsertionProp
   value,
   to,
 }) => {
-  const { registry } = useContext(BehaviorContext);
+  const { elements } = useContext(BehaviorContext);
 
   useEffect(() => {
     if (!id) {
       return;
     }
 
-    registry.set(id, {
+    elements.set(id, {
       id,
       type: 'State.Insertion',
       actions: {
         run() {
-          const element = registry.get(target);
+          const element = elements.get(target);
 
           if (!element?.store) {
             return;
@@ -41,9 +41,9 @@ export const StateInsertion: CoreComponent<'State.Insertion', StateInsertionProp
     });
 
     return () => {
-      registry.delete(id);
+      elements.delete(id);
     };
-  }, [id, target, value, to, registry]);
+  }, [id, target, value, to, elements]);
 
   return null;
 };

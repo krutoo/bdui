@@ -1,9 +1,9 @@
 import { useContext, useEffect, useMemo } from 'react';
 import type { Status } from '@krutoo/utils';
 import { createStore } from '@krutoo/utils/store';
+import type { CoreComponent } from '#types/core';
 import { BehaviorContext } from '../../context/behavior.ts';
 import { FormContext } from '../../context/form.ts';
-import type { CoreComponent } from '../../types.ts';
 import type { FormProps } from './types.ts';
 
 /**
@@ -19,7 +19,7 @@ export const Form: CoreComponent<'Form', FormProps> = ({
   onSubmitDone,
   onSubmitFail,
 }) => {
-  const { registry, dependencies } = useContext(BehaviorContext);
+  const { elements, dependencies } = useContext(BehaviorContext);
   const { http } = dependencies;
   const { client } = http;
   const store = useMemo(() => createStore({ status: 'initial' as Status }), []);
@@ -29,7 +29,7 @@ export const Form: CoreComponent<'Form', FormProps> = ({
       return;
     }
 
-    registry.set(id, {
+    elements.set(id, {
       type: 'Form',
       id,
       store,
@@ -41,7 +41,7 @@ export const Form: CoreComponent<'Form', FormProps> = ({
 
           // @todo paramPath который имеет приоритет над name и в котором может быть `foo.bar[2].baz`
           const values = Object.fromEntries(
-            [...registry.values()]
+            [...elements.values()]
               .filter(item => (item as { formId?: string }).formId === id)
               .map(item => [
                 (item as { name?: string }).name,
@@ -62,7 +62,7 @@ export const Form: CoreComponent<'Form', FormProps> = ({
               store.set({ status: 'success' });
 
               if (onSubmitDone) {
-                const action = registry.get(onSubmitDone);
+                const action = elements.get(onSubmitDone);
 
                 action?.actions?.run?.();
               }
@@ -71,7 +71,7 @@ export const Form: CoreComponent<'Form', FormProps> = ({
               store.set({ status: 'failure' });
 
               if (onSubmitFail) {
-                const action = registry.get(onSubmitFail);
+                const action = elements.get(onSubmitFail);
 
                 action?.actions?.run?.();
               }
@@ -81,9 +81,9 @@ export const Form: CoreComponent<'Form', FormProps> = ({
     });
 
     return () => {
-      registry.delete(id);
+      elements.delete(id);
     };
-  }, [id, resource, method, onSubmitDone, onSubmitFail, store, registry, client]);
+  }, [id, resource, method, onSubmitDone, onSubmitFail, store, elements, client]);
 
   return <FormContext.Provider value={{ formId: id }}>{children}</FormContext.Provider>;
 };

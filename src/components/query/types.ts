@@ -1,4 +1,4 @@
-import type { RequestParamDefinition } from '../../utils/build-request.ts';
+import type { RequestParamDefinition } from '#types/http';
 
 export interface QueryProps {
   id?: string;

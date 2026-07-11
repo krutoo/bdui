@@ -1,7 +1,7 @@
 import { useContext, useEffect } from 'react';
 import { unset } from '#shared/unset';
+import type { CoreComponent } from '#types/core';
 import { BehaviorContext } from '../../mod.ts';
-import type { CoreComponent } from '../../types.ts';
 import type { StateRemovalProps } from './types.ts';
 
 /**
@@ -14,19 +14,19 @@ export const StateRemoval: CoreComponent<'State.Removal', StateRemovalProps> = (
   target,
   from,
 }) => {
-  const { registry } = useContext(BehaviorContext);
+  const { elements } = useContext(BehaviorContext);
 
   useEffect(() => {
     if (!id) {
       return;
     }
 
-    registry.set(id, {
+    elements.set(id, {
       id,
       type: 'State.Removal',
       actions: {
         run() {
-          const element = registry.get(target);
+          const element = elements.get(target);
 
           if (!element?.store) {
             return;
@@ -39,9 +39,9 @@ export const StateRemoval: CoreComponent<'State.Removal', StateRemovalProps> = (
     });
 
     return () => {
-      registry.delete(id);
+      elements.delete(id);
     };
-  }, [id, target, from, registry]);
+  }, [id, target, from, elements]);
 
   return null;
 };

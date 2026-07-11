@@ -1,8 +1,8 @@
 import { useCallback, useContext, useEffect, useMemo, useRef, useSyncExternalStore } from 'react';
 import { createStore } from '@krutoo/utils/store';
+import type { ElementRegistryItem } from '#types/core';
 import { BehaviorContext } from '../context/behavior.ts';
 import { FormContext } from '../context/form.ts';
-import type { RegistryItem } from '../types.ts';
 
 export interface UseFieldReturn {
   value: string;
@@ -24,7 +24,7 @@ export function useField({
   defaultValue?: string;
 }): UseFieldReturn {
   const { formId } = useContext(FormContext);
-  const { registry } = useContext(BehaviorContext);
+  const { elements } = useContext(BehaviorContext);
   const defaultValueRef = useRef(defaultValue);
   const store = useMemo(
     () => createStore({ value: defaultValueRef.current ?? '' }),
@@ -44,19 +44,19 @@ export function useField({
       return;
     }
 
-    registry.set(id, {
+    elements.set(id, {
       type: 'field',
       id,
       store,
 
       name,
       formId,
-    } as RegistryItem & { name?: string; formId?: string });
+    } as ElementRegistryItem & { name?: string; formId?: string });
 
     return () => {
-      registry.delete(id);
+      elements.delete(id);
     };
-  }, [id, name, registry, store, formId]);
+  }, [id, name, elements, store, formId]);
 
   return {
     value: state.value,

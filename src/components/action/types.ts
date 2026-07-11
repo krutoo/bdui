@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import type { CoreComponent } from '../../types.ts';
+import type { CoreComponent } from '#types/core';
 
 export interface ActionProps {
   id?: string;

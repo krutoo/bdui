@@ -17,7 +17,7 @@ export function isExpressionNotation(value: unknown): value is string {
  * @returns Evaluate function.
  */
 export function useEvaluate<T>(): (expression: string) => T {
-  const { registry } = useContext(BehaviorContext);
+  const { elements } = useContext(BehaviorContext);
   const { extraContext } = useContext(ExpressionContext);
 
   return useCallback(
@@ -26,25 +26,25 @@ export function useEvaluate<T>(): (expression: string) => T {
 
       const basicContext = {
         valueOf: (targetId: string) => {
-          const state = registry.get(targetId)?.store?.get();
+          const state = elements.get(targetId)?.store?.get();
 
           return (state as { value: string })?.value;
         },
 
         dataOf: (targetId: string) => {
-          const state = registry.get(targetId)?.store?.get();
+          const state = elements.get(targetId)?.store?.get();
 
           return (state as { data: unknown })?.data;
         },
 
         statusOf: (targetId: string) => {
-          const state = registry.get(targetId)?.store?.get();
+          const state = elements.get(targetId)?.store?.get();
 
           return `${(state as { status?: unknown })?.status}`;
         },
 
         stateOf: (targetId: string) => {
-          const state = registry.get(targetId)?.store?.get();
+          const state = elements.get(targetId)?.store?.get();
 
           return state;
         },
@@ -61,6 +61,6 @@ export function useEvaluate<T>(): (expression: string) => T {
 
       return result as T;
     },
-    [registry, extraContext],
+    [elements, extraContext],
   );
 }

@@ -1,5 +1,5 @@
 import { Fragment, type ReactElement, type ReactNode } from 'react';
-import type { Element, Primitive } from '../types.ts';
+import type { Element, Primitive } from '#types/dto';
 
 /**
  * Renders React-tree to Element.

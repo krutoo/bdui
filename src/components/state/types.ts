@@ -1,4 +1,5 @@
-import type { CoreComponent, ParamDefinition } from '../../types.ts';
+import type { CoreComponent } from '#types/core';
+import type { ParamDefinition } from '#types/dto';
 
 export interface StateProps {
   id?: string;

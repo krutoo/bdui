@@ -1,12 +1,11 @@
 import type { ComponentType, ReactNode } from 'react';
-import type { ResponseReplacersRetriever } from '../../context/behavior.ts';
-import type { HttpClient } from '../../types.ts';
+import type { HttpClient, ResponseReplacersRetriever } from '#types/http';
 
 export interface BehaviorProviderProps {
   components: Record<string, ComponentType<any> | undefined>;
   children?: ReactNode;
   http?: {
     client?: HttpClient;
-    retrieveReplacersFromResponse?: ResponseReplacersRetriever;
+    retrieveReplacers?: ResponseReplacersRetriever;
   };
 }

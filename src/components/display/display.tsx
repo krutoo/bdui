@@ -1,8 +1,8 @@
 import { type ReactNode, useContext, useEffect, useState } from 'react';
 import { isReactNode } from '#shared/react';
+import type { CoreComponent } from '#types/core';
 import { BehaviorContext } from '../../context/behavior.ts';
 import { useEvaluate } from '../../hooks/use-evaluate.ts';
-import type { CoreComponent } from '../../types.ts';
 import type { DisplayProps } from './types.ts';
 
 /**
