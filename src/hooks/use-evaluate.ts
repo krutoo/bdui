@@ -16,7 +16,7 @@ export function isExpressionNotation(value: unknown): value is string {
  * Returns evaluate function.
  * @returns Evaluate function.
  */
-export function useEvaluate<T>(): (expression: string) => T {
+export function useEvaluate(): (expression: string) => unknown {
   const { elements } = useContext(BehaviorContext);
   const { extraContext } = useContext(ExpressionContext);
 
@@ -24,32 +24,28 @@ export function useEvaluate<T>(): (expression: string) => T {
     (expression: string) => {
       const cleanExpression = expression.replace(/^{{(.+)}}$/, '$1');
 
+      const getState = <S = unknown>(targetId: string): S | undefined => {
+        return elements.get(targetId)?.store?.get() as S | undefined;
+      };
+
       const basicContext = {
         valueOf: (targetId: string) => {
-          const state = elements.get(targetId)?.store?.get();
-
-          return (state as { value: string })?.value;
+          return String(getState<{ value: string }>(targetId)?.value);
         },
 
         dataOf: (targetId: string) => {
-          const state = elements.get(targetId)?.store?.get();
-
-          return (state as { data: unknown })?.data;
+          return getState<{ data: unknown }>(targetId)?.data;
         },
 
         statusOf: (targetId: string) => {
-          const state = elements.get(targetId)?.store?.get();
-
-          return `${(state as { status?: unknown })?.status}`;
+          return String(getState<{ status: unknown }>(targetId)?.status);
         },
 
         stateOf: (targetId: string) => {
-          const state = elements.get(targetId)?.store?.get();
-
-          return state;
+          return getState(targetId);
         },
 
-        concat: (...rest: string[]): string => {
+        concat: (...rest: unknown[]): string => {
           return rest.join('');
         },
       };
@@ -59,7 +55,7 @@ export function useEvaluate<T>(): (expression: string) => T {
         ...basicContext,
       });
 
-      return result as T;
+      return result;
     },
     [elements, extraContext],
   );
