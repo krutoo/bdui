@@ -8,15 +8,15 @@ export interface StateProps {
 
 export interface StateRemovalProps {
   id?: string;
-  target: string;
-  from: string;
+  target?: string;
+  from?: string;
 }
 
 export interface StateInsertionProps {
   id?: string;
-  target: string;
-  to: string;
-  value: ParamDefinition[];
+  target?: string;
+  to?: string;
+  value?: ParamDefinition[];
 }
 
 export interface StateComponent extends CoreComponent<'State', StateProps> {

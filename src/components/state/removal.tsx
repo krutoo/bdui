@@ -26,6 +26,10 @@ export const StateRemoval: CoreComponent<'State.Removal', StateRemovalProps> = (
       type: 'State.Removal',
       actions: {
         run() {
+          if (!target || !from) {
+            return;
+          }
+
           const element = elements.get(target);
 
           if (!element?.store) {

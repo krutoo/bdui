@@ -23,6 +23,10 @@ export const Each: CoreComponent<'Each', EachProps> = ({
   const evaluate = useEvaluate();
 
   useEffect(() => {
+    if (!expression) {
+      return;
+    }
+
     const sync = () => {
       try {
         const found = evaluate(expression);

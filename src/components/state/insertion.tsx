@@ -28,9 +28,13 @@ export const StateInsertion: CoreComponent<'State.Insertion', StateInsertionProp
       type: 'State.Insertion',
       actions: {
         run() {
+          if (!target || !to || !value) {
+            return;
+          }
+
           const element = elements.get(target);
 
-          if (!element?.store) {
+          if (element?.type !== 'State' || !element?.store) {
             return;
           }
 

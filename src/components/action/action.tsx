@@ -7,11 +7,12 @@ import type { ActionComponent } from './types.ts';
 /**
  * Action component. Renders nothing.
  * "Actions" is way to interact with elements.
+ * This component is way to declare some action and add id for it.
  *
  * @param props Props.
  * @returns `ReactNode`.
  *
- * For example if you have Button and Modal componentd,
+ * For example if you have Button and Modal components,
  * you can define `open` action for Modal and click action for Button.
  * Than you can say that when button clicks, modal should be opened.
  *

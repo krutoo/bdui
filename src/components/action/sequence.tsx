@@ -6,7 +6,7 @@ import type { ActionSequenceProps } from './types.ts';
 
 /**
  * Declares a chain of actions. Renders nothing.
- * Will run each child actions in order they declared.
+ * On run will run child actions in order they declared.
  * @param props Props.
  * @returns `ReactNode`.
  */
