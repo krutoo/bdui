@@ -30,7 +30,7 @@ export const ActionSequence: CoreComponent<'Action.Sequence', ActionSequenceProp
           const actions = [...order].map(actionId => elements.get(actionId));
 
           for (const action of actions) {
-            if (action?.type === 'action') {
+            if (action?.type === 'Action') {
               await action?.actions?.run?.();
             }
           }
