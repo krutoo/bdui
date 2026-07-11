@@ -39,19 +39,20 @@
     "tsc-alias": "^1.9.0",
     "typescript": "^6.0.3"
   },
-  "files": [
-    "dist"
-  ],
-  "exports": {
-    ".": "./dist/mod.js"
-  },
-  "sideEffects": false,
   "peerDependencies": {
+    "@krutoo/utils": "^0.0.37",
     "react": "^19.2.7"
   },
   "peerDependenciesMeta": {
     "react": {
       "optional": true
     }
-  }
+  },
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": "./dist/mod.js"
+  },
+  "sideEffects": false
 }
