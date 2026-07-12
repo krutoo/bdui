@@ -1,5 +1,7 @@
-import { Fragment, type ReactElement, type ReactNode } from 'react';
+import { Fragment, type ReactNode } from 'react';
+import { isObject } from '@krutoo/utils';
 import type { Element, Primitive } from '#types/dto';
+import { isIterable } from '../shared/is-iterable.ts';
 
 /**
  * Renders React-tree to Element.
@@ -8,16 +10,28 @@ import type { Element, Primitive } from '#types/dto';
  * @returns Element or primitive.
  */
 export function renderToJSON(node: ReactNode): Element | Primitive {
-  if (typeof node === 'object' && node !== null) {
-    const element = node as ReactElement<{ children?: ReactNode }>;
-    const { children, ...props } = element.props;
+  if (isObject(node)) {
+    // check iterable objects
+    if (isIterable(node)) {
+      return {
+        type: 'Fragment',
+        children: [...node].map(renderToJSON),
+      };
+    }
+
+    // check promises
+    if ('then' in node) {
+      return null;
+    }
+
+    const { children, ...props } = (node.props || {}) as { children?: ReactNode };
 
     const result: Element = {
       type:
-        element.type === Fragment
+        node.type === Fragment
           ? 'Fragment'
-          : typeof element.type === 'function'
-            ? (element.type as { displayName?: string }).displayName || element.type.name
+          : typeof node.type === 'function'
+            ? (node.type as { displayName?: string }).displayName || node.type.name
             : 'unknown',
     };
 

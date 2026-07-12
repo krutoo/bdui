@@ -1,5 +1,5 @@
 import { type ReactNode, useContext, useEffect, useState } from 'react';
-import { isReactNode } from '#shared/react';
+import { isSingleReactNode } from '#shared/react';
 import type { CoreComponent } from '#types/core';
 import { BehaviorContext } from '../../context/behavior.ts';
 import { useEvaluate } from '../../hooks/use-evaluate.ts';
@@ -20,7 +20,7 @@ export const Display: CoreComponent<'Display', DisplayProps> = ({ of: expression
       try {
         const result = evaluate(expression);
 
-        setContent(isReactNode(result) ? result : '{Non display value}');
+        setContent(isSingleReactNode(result) ? result : '{Non display value}');
       } catch (error) {
         // @todo logger
         // eslint-disable-next-line no-console
