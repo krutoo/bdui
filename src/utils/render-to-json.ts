@@ -21,7 +21,7 @@ export function renderToJSON(node: ReactNode): Element | Primitive {
     };
 
     if (Object.keys(props).length > 0) {
-      // @todo skip non-json values by default but add option to customize behavior (toJSON)
+      // @todo пропускать не-JSON значения но проверять toJSON либо добавить опцию для кастомизации
       result.props = props;
     }
 

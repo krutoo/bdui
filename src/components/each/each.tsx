@@ -48,7 +48,7 @@ export const Each: CoreComponent<'Each', EachProps> = ({
   return (
     <>
       {collection?.map((item, index) => (
-        // @todo Надо подумать как быть с тем, что надо каждый раз не забывать докидывать extraContext
+        // @todo подумать как быть с тем, что надо каждый раз не забывать докидывать extraContext
         <ExpressionContext
           key={index}
           value={{

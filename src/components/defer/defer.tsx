@@ -40,7 +40,7 @@ export const Defer: CoreComponent<'Defer', DeferProps> = ({
         }),
         async callback({ response }) {
           if (!response.ok) {
-            // @todo status в store?
+            // @todo status в store
             return;
           }
 

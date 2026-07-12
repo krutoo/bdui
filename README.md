@@ -6,6 +6,13 @@ Currently only React/Preact is supported for frontend.
 
 ## Usage
 
+Installation:
+
+```sh
+# coming soon
+npm add @krutoo/bdui
+```
+
 First of all you need to prepare you frontend:
 
 ```tsx
