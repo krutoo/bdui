@@ -9,6 +9,14 @@ const config: Config[] = [
       '@typescript-eslint/no-explicit-any': 'off',
     },
   },
+
+  // examples
+  {
+    files: ['examples/**/*.{ts,tsx}'],
+    rules: {
+      'jsdoc/require-jsdoc': 'off',
+    },
+  },
 ];
 
 export default config;

@@ -1,0 +1,12 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.summary {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  cursor: pointer;
+}

@@ -1,0 +1,29 @@
+.layout {
+  position: relative;
+  padding: 24px 0;
+  display: flex;
+  gap: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  width: calc(100% - 48px);
+  max-width: 1024px;
+  align-items: flex-start;
+}
+
+.main {
+  width: 0;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.aside {
+  position: sticky;
+  top: 24px;
+  width: 300px;
+  flex-grow: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}

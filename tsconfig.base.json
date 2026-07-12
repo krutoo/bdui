@@ -12,5 +12,6 @@
       "#shared/queue": ["./src/shared/queue.ts"],
       "#shared/expression": ["./src/shared/expression.ts"]
     }
-  }
+  },
+  "exclude": ["./examples/*"]
 }

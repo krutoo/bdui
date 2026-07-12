@@ -1,0 +1,34 @@
+.skeleton {
+  display: block;
+  width: 100%;
+  height: 1em;
+  background: #eee;
+  border-radius: 0.25em;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+.paragraph {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.paragraph > .skeleton:nth-child(2) {
+  width: 65%;
+}
+.paragraph > .skeleton:nth-child(3) {
+  width: 50%;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 1;
+  }
+}
