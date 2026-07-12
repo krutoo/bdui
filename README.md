@@ -176,6 +176,8 @@ Action always has a `run` method so next it does almost same operation under the
 
 Note that it is just an example and for simplicity you can rewrite `Button` for declaring action type and action target directly in `Button` props.
 
+WIP docs about `Action.Sequence`
+
 ### `Condition`
 
 `Condition` component lets you render some markup only if _expression_ passed to `if` prop is truthy:
@@ -202,11 +204,11 @@ Here is what features supported in expressions:
 
 Also there is some builtin functions:
 
-- WIP docs about builtin functions
+- WIP docs about builtin functions and `ExpressionContext`
 
 ### `Defer`
 
-`Defer` allows you to declare tree part that should be fetched after mount:
+`Defer` allows you to declare tree part that should be fetched after mount. It will render children until response is done.
 
 ```tsx
 import { Defer } from '@krutoo/bdui';
@@ -227,7 +229,7 @@ Supported `Defer` actions:
 
 ### `Form`
 
-`Form` works almost html forms but sends fields as JSON:
+`Form` works almost like html forms but sends values from fields as JSON:
 
 ```tsx
 import { Form } from '@krutoo/bdui';
@@ -274,10 +276,39 @@ Supported `Query` actions:
 
 - `invalidate` - triggers refetch.
 
-### State
+### `Each`
+
+`Each` allows you to render markup for each item of array. For example if your query returns array you can render markup for each item:
+
+```tsx
+import { Display, Each, Query } from '@krutoo/bdui';
+import { Heading, Image, Typography } from '#components';
+
+const markup = (
+  <>
+    <Query id='posts_query' resource='/api/posts' />
+
+    <Each of='{{ dataOf("posts_query") }}' as='$post' indexAs='$index'>
+      <Image src='{{ $post.image_url }}' />
+
+      <Heading>
+        <Display of='{{ concat("Post №", $index + 1) }}' />
+      </Heading>
+
+      <Typography>
+        <Display of='{{ $post.summary }}' />
+      </Typography>
+    </Each>
+  </>
+);
+```
+
+### `State`
 
 `State` allows you to just store any JSON-value.
 It renders nothing but you can render value from it by `Display` and also use it in expressions.
+
+To define initial state you need to use _param definition_ list.
 
 You also can change state by `State.Insertion` and `State.Removal` actions.
 
@@ -292,10 +323,6 @@ const markup = (
     <Heading>
       <Display of='{{ stateOf("counter").count }}' />
     </Heading>
-
-    <Condition if='{{ stateOf("counter").count > 10 }}'>
-      <Heading>Count is great enough!</Heading>
-    </Condition>
 
     <State.Insertion
       id='counter_inc'
