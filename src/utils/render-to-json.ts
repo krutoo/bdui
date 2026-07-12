@@ -3,7 +3,8 @@ import type { Element, Primitive } from '#types/dto';
 
 /**
  * Renders React-tree to Element.
- * @param node React-node.
+ * For `type`, `displayName` or `name` of component will be used.
+ * @param node `ReactNode`.
  * @returns Element or primitive.
  */
 export function renderToJSON(node: ReactNode): Element | Primitive {
