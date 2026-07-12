@@ -2,7 +2,7 @@
 
 SDK for rendering Backend-driven UI by declarative JSON-tree of elements.
 
-Currently only React/Preact is supported for frontend.
+Currently only React, Preact and React Native is supported for frontend.
 
 ## Usage
 
@@ -93,6 +93,23 @@ To make it work, your backend should return **element tree**, for example like t
 ```
 
 Yes, it looks **almost** exactly like Virtual DOM tree from React/Preact. But this is JSON, so there is no functions or any other JS values that cannot be serialized.
+
+All elements implements basic `Element` interface:
+
+```ts
+type Primitive = string | number | boolean | null;
+
+interface Element {
+  // type can be any string
+  type: string;
+
+  // props is optional and can contain any object
+  props?: object;
+
+  // children is optional array and can contain element or primitive
+  children?: Array<Element | Primitive>;
+}
+```
 
 ## Core components
 
@@ -346,3 +363,7 @@ const markup = (
 ### My OpenAPI linter is too strict for trees like this, how to be?
 
 WIP docs about _mediator-objects_
+
+WIP docs about normalizing tree from response
+
+WIP docs about avoiding primitives in `children`
