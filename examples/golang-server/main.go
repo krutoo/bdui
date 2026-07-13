@@ -38,7 +38,7 @@ func NewElement(componentType string) *Element {
 	element := &Element{}
 	element.ElementCore = &ElementCore[map[string]any, *Element]{
 		Type: componentType,
-		self: element, // Привязываем ссылку на себя
+		self: element,
 	}
 	return element
 }
@@ -139,7 +139,6 @@ func Widget() *Element {
 // Page
 // ==========================================
 func ExamplePage() *Element {
-	// Всё компилируется без единой ошибки типов, метод Children работает везде одинаково!
 	return Layout().Children(
 		MainColumn().Children(
 			Widget().Children(
@@ -183,6 +182,6 @@ func main() {
 		})
 	})
 
-	log.Println("Сервер запущен на http://localhost:8080")
+	log.Println("Server started on http://localhost:8080")
 	_ = http.ListenAndServe(":3200", nil)
 }

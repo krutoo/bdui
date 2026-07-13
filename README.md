@@ -116,7 +116,7 @@ interface Element {
 Core components includes some useful entities that allows you to declare dynamic UI with complex logic.
 Here is overview.
 
-### Action
+### `Action`
 
 `Action` is element for attach some simple interaction to identifier to use it later.
 
