@@ -7,7 +7,8 @@ export interface ParamEvaluator {
 }
 
 /**
- *
+ * Returns map-function for params that evaluates expressions in value fields.
+ * @returns Function to map param.
  */
 export function useParamEval(): ParamEvaluator {
   const evaluate = useEvaluate();
