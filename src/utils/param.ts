@@ -1,10 +1,10 @@
 import { set } from '#shared/set';
 import type { ParamDefinition, ParamType } from '#types/dto';
 
-export const parsers: Record<ParamType, (value: any) => any> = {
-  int: value => parseInt(value, 10),
-  float: value => parseFloat(value),
-  bool: value => Boolean(value),
+export const parsers: Record<ParamType, (value: unknown) => any> = {
+  int: value => parseInt(String(value), 10),
+  float: value => parseFloat(String(value)),
+  bool: value => value === 'true' || value === true,
   string: value => String(value),
   null: () => null,
 };
