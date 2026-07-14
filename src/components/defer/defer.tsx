@@ -1,4 +1,5 @@
-import { type ReactNode, useContext, useEffect, useMemo, useSyncExternalStore } from 'react';
+import { useContext, useEffect, useMemo, useSyncExternalStore } from 'react';
+import type { Status } from '@krutoo/utils';
 import { createStore } from '@krutoo/utils/store';
 import type { Element, Primitive } from '#types/dto';
 import { BehaviorContext } from '../../context/behavior.ts';
@@ -7,6 +8,11 @@ import type { CoreComponent } from '../../types/core.ts';
 import { buildRequest } from '../../utils/build-request.ts';
 import { BehaviorRenderer } from '../behavior-renderer/mod.ts';
 import type { DeferProps } from './types.ts';
+
+interface DeferState {
+  status: Status;
+  tree: Element | Primitive;
+}
 
 /**
  * Deferred markup. After mount make request and renders BDUI from response.
@@ -25,7 +31,14 @@ export const Defer: CoreComponent<'Defer', DeferProps> = ({
   const evaluateParam = useParamEval();
   const { http } = dependencies;
   const { retrieveReplacers } = http;
-  const store = useMemo(() => createStore({ content: null as ReactNode }), []);
+  const store = useMemo(
+    () =>
+      createStore<DeferState>({
+        status: 'initial',
+        tree: null,
+      }),
+    [],
+  );
   const state = useSyncExternalStore(store.subscribe, store.get, store.get);
 
   useEffect(() => {
@@ -49,7 +62,10 @@ export const Defer: CoreComponent<'Defer', DeferProps> = ({
         }),
         async callback({ response }) {
           if (!response.ok) {
-            // @todo status в store
+            store.set({
+              status: 'failure',
+              tree: store.get().tree,
+            });
             return;
           }
 
@@ -58,6 +74,11 @@ export const Defer: CoreComponent<'Defer', DeferProps> = ({
           for (const { elementId, tree } of replacers) {
             elements.get(elementId)?.actions?.fill?.(tree);
           }
+
+          store.set({
+            status: 'success',
+            tree: store.get().tree,
+          });
         },
       });
     };
@@ -68,13 +89,19 @@ export const Defer: CoreComponent<'Defer', DeferProps> = ({
       store,
       actions: {
         fill(tree: Element | Primitive) {
+          if (Object.is(tree, store.get().tree)) {
+            return;
+          }
+
           store.set({
-            content: <BehaviorRenderer tree={tree} />,
+            status: 'success',
+            tree,
           });
         },
         invalidate() {
           store.set({
-            content: null,
+            status: 'pending',
+            tree: store.get().tree,
           });
           query();
         },
@@ -88,7 +115,7 @@ export const Defer: CoreComponent<'Defer', DeferProps> = ({
     };
   }, [id, resource, method, params, elements, tasks, store, retrieveReplacers, evaluateParam]);
 
-  return <>{state.content ?? children}</>;
+  return <>{state.status === 'success' ? <BehaviorRenderer tree={state.tree} /> : children}</>;
 };
 
 Defer.displayName = 'Defer';

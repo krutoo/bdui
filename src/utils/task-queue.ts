@@ -12,7 +12,7 @@ export interface TaskQueueConfig {
 export interface Task {
   type: 'fetch';
   request: HttpRequest;
-  callback: (payload: { response: HttpResponse }) => void;
+  callback: (payload: { response: HttpResponse }) => void | Promise<void>;
 }
 
 /**
@@ -56,9 +56,27 @@ export class TaskQueue extends Queue<Task> {
       for (let i = 0; i < this.options.chunkSize; i++) {
         const task = this.dequeue();
 
-        if (task && !chunk.some(item => isEqualTasks(item, task))) {
-          chunk.push(task);
+        if (!task) {
+          continue;
         }
+
+        const sameTaskIndex = chunk.findIndex(item => isEqualTasks(item, task));
+
+        if (sameTaskIndex === -1) {
+          chunk.push(task);
+          continue;
+        }
+
+        // IMPORTANT: merge callbacks for same task
+        const sameTask = chunk[sameTaskIndex]!;
+
+        chunk.splice(sameTaskIndex, 1, {
+          ...sameTask,
+          async callback(payload) {
+            await sameTask.callback(payload);
+            await task.callback(payload);
+          },
+        });
       }
 
       await Promise.all(
