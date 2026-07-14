@@ -118,7 +118,7 @@ Here is overview.
 
 ### `Action`
 
-`Action` is element for attach some simple interaction to identifier to use it later.
+`Action` is element for attach some simple interaction to identifier and use it later.
 
 To explain how to use actions, lets define some custom components to see how it works. For example lets create `Button` and `Modal`, using SDK for React.
 
@@ -358,7 +358,7 @@ import { Button, Heading } from '#components';
 
 const markup = (
   <>
-    <State id='counter' initialValue={[{ key: 'count', value: '0', type: 'int' }]} />
+    <State id='counter' init={[{ key: 'count', type: 'int', value: '0' }]} />
 
     <Heading>
       <Display of='{{ stateOf("counter").count }}' />
@@ -366,7 +366,7 @@ const markup = (
 
     <State.Insertion
       id='counter_inc'
-      value={[{ key: 'count', value: '{{ stateOf("counter").count + 1 }}', type: 'int' }]}
+      value={[{ key: 'count', type: 'int', value: '{{ stateOf("counter").count + 1 }}' }]}
     />
 
     <Button onClick='counter_inc'>Add</Button>
