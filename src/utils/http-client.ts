@@ -19,6 +19,7 @@ export function createFetchHttpClient({
 
       return {
         ok: response.ok,
+        status: response.status,
         json: () => response.clone().json(),
       };
     },
@@ -34,6 +35,7 @@ export function createStubHttpClient(): HttpClient {
     async request() {
       return {
         ok: false,
+        status: 0,
         json: () => Promise.reject(new Error('No body')),
       };
     },

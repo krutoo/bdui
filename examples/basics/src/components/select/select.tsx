@@ -1,5 +1,5 @@
 import { type ReactNode, useEffect, useRef } from 'react';
-import { useField } from '@krutoo/bdui';
+import { useFormField } from '@krutoo/bdui';
 import styles from './select.m.css';
 
 export interface SelectProps {
@@ -11,7 +11,7 @@ export interface SelectProps {
 
 export function Select({ id, name, defaultValue, children }: SelectProps): ReactNode {
   const ref = useRef<HTMLSelectElement>(null);
-  const { value, handleChange } = useField({ id, name, defaultValue });
+  const { value, handleChange } = useFormField({ id, name, defaultValue });
 
   useEffect(() => {
     if (ref.current) {

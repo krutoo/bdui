@@ -38,7 +38,7 @@ createRoot(document.querySelector('#root')).render(
 );
 ```
 
-Anywhere inside provider you can use `BehaviorRenderer` to render BDUI trees:
+Now anywhere inside provider you can use `BehaviorRenderer` to render BDUI trees:
 
 ```tsx
 // components/app.tsx
@@ -132,10 +132,10 @@ export function Button({ children, onClick }) {
 
   const handleClick = () => {
     // here we trying to find action in element registry
-    const targetAction = elements.get(onClick);
+    const actionElement = elements.get(onClick);
 
-    // action element has run action, so we trying to call it
-    targetAction?.actions.run?.();
+    // action element has `run` action, so we trying to call it
+    actionElement?.actions.run?.();
   };
 
   return <button onClick={handleClick}>{children}</button>;
@@ -223,8 +223,8 @@ Here is what features supported in expressions:
 - Math operators: `==`, `!=`, `>`, `<`, `>=`, `<=`;
 - Literals for boolean, numbers and strings;
 - JS compatible variable names;
-- JS function call syntax;
-- JS property access syntax (dots and brackets).
+- JS function call syntax (like `hello()` and `foobar(123, "string")`);
+- JS property access syntax (dots and brackets like `user.settings[1]`).
 
 Also there is some builtin functions:
 
@@ -232,7 +232,7 @@ Also there is some builtin functions:
 
 ### `Defer`
 
-`Defer` allows you to declare tree part that should be fetched after mount. It will render children until response is done.
+`Defer` allows you to declare tree part that should be fetched after mount. It will render children until response is done. Think about `Defer` as an `img` but instead image file it will load and render markup.
 
 ```tsx
 import { Defer } from '@krutoo/bdui';
@@ -273,7 +273,23 @@ Supported `Form` actions:
 
 Core components not include any fields but you can declare your custom field component using `useField` hook.
 
-### `Query` and `Display`
+### `Display`
+
+`Display` just allows you to render result of some expression (if possible):
+
+```tsx
+import { Display } from '@krutoo/bdui';
+
+const markup = (
+  <>
+    <Display of='{{ concat("Your score is ", timeSpent * 1.125, " points") }}' />
+  </>
+);
+```
+
+Next you will see when it can be useful.
+
+### `Query`
 
 `Query` allows you to declarative fetch any JSON after mount. With `Display` you can render data from query.
 

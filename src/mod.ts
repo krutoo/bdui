@@ -42,7 +42,7 @@ export { State, type StateProps } from './components/state/mod.ts';
 
 // hooks
 export { useEvaluate } from './hooks/use-evaluate.ts';
-export { useField } from './hooks/use-field.ts';
+export { useFormField } from './hooks/use-form-field.ts';
 
 // utils
 export { renderToJSON } from './utils/render-to-json.ts';

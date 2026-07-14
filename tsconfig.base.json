@@ -13,5 +13,5 @@
       "#shared/expression": ["./src/shared/expression.ts"]
     }
   },
-  "exclude": ["./examples/*"]
+  "exclude": ["./dist/*", "./examples/*"]
 }

@@ -1,4 +1,4 @@
-import { useField } from '@krutoo/bdui';
+import { useFormField } from '@krutoo/bdui';
 import styles from './input.m.css';
 
 export interface InputProps {
@@ -9,7 +9,7 @@ export interface InputProps {
 }
 
 export function Input({ id, name, defaultValue, placeholder }: InputProps) {
-  const { value, handleChange } = useField({ id, name, defaultValue });
+  const { value, handleChange } = useFormField({ id, name, defaultValue });
 
   return (
     <input

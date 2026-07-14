@@ -1,8 +1,13 @@
-import { useCallback, useContext, useEffect, useMemo, useRef, useSyncExternalStore } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useSyncExternalStore } from 'react';
 import { createStore } from '@krutoo/utils/store';
-import type { ElementRegistryItem } from '#types/core';
-import { BehaviorContext } from '../context/behavior.ts';
 import { FormContext } from '../context/form.ts';
+import { BehaviorContext } from '../mod.ts';
+
+export interface UseFieldOptions {
+  id?: string;
+  name?: string;
+  defaultValue?: string;
+}
 
 export interface UseFieldReturn {
   value: string;
@@ -14,22 +19,16 @@ export interface UseFieldReturn {
  * @param options Field options.
  * @returns Interface to declare basic form field.
  */
-export function useField({
-  id,
-  name,
-  defaultValue,
-}: {
-  id?: string;
-  name?: string;
-  defaultValue?: string;
-}): UseFieldReturn {
-  const { formId } = useContext(FormContext);
+export function useFormField({ id, name, defaultValue }: UseFieldOptions): UseFieldReturn {
   const { elements } = useContext(BehaviorContext);
-  const defaultValueRef = useRef(defaultValue);
+  const { registerField } = useContext(FormContext);
+
   const store = useMemo(
-    () => createStore({ value: defaultValueRef.current ?? '' }),
-    [defaultValueRef],
+    () => createStore<{ value: string }>({ value: defaultValue ?? '' }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
   );
+
   const state = useSyncExternalStore(store.subscribe, store.get, store.get);
 
   const handleChange = useCallback(
@@ -39,24 +38,35 @@ export function useField({
     [store],
   );
 
+  // register form field if name is defined
+  useEffect(() => {
+    if (!name) {
+      return;
+    }
+
+    return registerField({
+      name,
+      store,
+    });
+  }, [name, store, registerField]);
+
+  // register element if id is defined
   useEffect(() => {
     if (!id) {
       return;
     }
 
     elements.set(id, {
-      type: 'field',
+      type: 'Form.Field',
       id,
       store,
-
-      name,
-      formId,
-    } as ElementRegistryItem & { name?: string; formId?: string });
+      actions: {},
+    });
 
     return () => {
       elements.delete(id);
     };
-  }, [id, name, elements, store, formId]);
+  }, [id, store, elements]);
 
   return {
     value: state.value,

@@ -15,6 +15,7 @@ export interface HttpRequestInit {
 
 export interface HttpResponse {
   ok: boolean;
+  status: number;
   json: () => Promise<unknown>;
 }
 
