@@ -1,6 +1,6 @@
 export type Primitive = string | number | boolean | null;
 
-export interface Element<T extends string = string, P extends Record<string, any> = any> {
+export interface Element<T extends string = string, P extends object = object> {
   type: T;
   props?: P;
   children?: Array<Element | Primitive>;
