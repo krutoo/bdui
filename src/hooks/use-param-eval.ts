@@ -15,6 +15,7 @@ export function useParamEval(): ParamEvaluator {
 
   return useStableCallback(<T extends ParamDefinition>(param: T): T => ({
     ...param,
+    key: isExpressionNotation(param.key) ? String(evaluate(param.key)) : param.key,
     value: isExpressionNotation(param.value) ? String(evaluate(param.value)) : param.value,
   })) as ParamEvaluator;
 }

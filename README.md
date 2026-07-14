@@ -366,6 +366,7 @@ const markup = (
 
     <State.Insertion
       id='counter_inc'
+      target='counter'
       value={[{ key: 'count', type: 'int', value: '{{ stateOf("counter").count + 1 }}' }]}
     />
 

@@ -19,6 +19,30 @@ export function ExamplePage(): ReactNode {
     <PageLayout>
       <PageLayout.Main>
         <Widget>
+          {/* value is a JSON-number */}
+          <State id='counter' init={[{ type: 'int', value: '0' }]} />
+
+          <Paragraph>
+            Count is <Display of='{{ stateOf("counter") }}' />
+          </Paragraph>
+
+          <State.Insertion
+            id='counter_inc'
+            target='counter'
+            value={[{ type: 'int', value: '{{ stateOf("counter") + 1 }}' }]}
+          />
+          <State.Insertion
+            id='counter_dec'
+            target='counter'
+            value={[{ type: 'int', value: '{{ stateOf("counter") - 1 }}' }]}
+          />
+
+          <Flex gap='12px'>
+            <Button onClick='counter_dec'>-</Button>
+            <Button onClick='counter_inc'>+</Button>
+          </Flex>
+        </Widget>
+        <Widget>
           <Heading level='2'>Defer markup</Heading>
           <Paragraph>They fetch markup by http and render children until response done</Paragraph>
 
@@ -85,6 +109,7 @@ export function ExamplePage(): ReactNode {
           <Heading level='2'>Dynamic form</Heading>
           <Paragraph>You can add/remove some fields</Paragraph>
 
+          {/* value is a JSON-array */}
           <State
             id='dynamic_form'
             init={[
@@ -125,8 +150,12 @@ export function ExamplePage(): ReactNode {
               <State.Insertion
                 id='dynamic_form/add_field'
                 target='dynamic_form'
-                to='{{ concat("[", stateOf("dynamic_form").length, "]") }}'
-                value={[{ value: 'new' }]}
+                value={[
+                  {
+                    key: '{{ concat("[", stateOf("dynamic_form").length, "]") }}',
+                    value: 'New field',
+                  },
+                ]}
               />
               <Button action='run' actionTarget='dynamic_form/add_field'>
                 Add field

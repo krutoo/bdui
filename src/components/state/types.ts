@@ -15,7 +15,6 @@ export interface StateRemovalProps {
 export interface StateInsertionProps {
   id?: string;
   target?: string;
-  to?: string;
   value?: ParamDefinition[];
 }
 

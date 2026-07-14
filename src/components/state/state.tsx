@@ -7,6 +7,12 @@ import { StateInsertion } from './insertion.tsx';
 import { StateRemoval } from './removal.tsx';
 import type { StateComponent } from './types.ts';
 
+/**
+ * Defines state, can contain any JSON-value. Renders nothing.
+ * You can render values from state by `Display`.
+ * @param props Props.
+ * @returns `ReactNode`.
+ */
 export const State: StateComponent = ({ id, init: initialParams }) => {
   const { elements } = useContext(BehaviorContext);
   const evaluateParam = useParamEval();

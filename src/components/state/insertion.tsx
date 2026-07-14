@@ -1,5 +1,4 @@
 import { useContext, useEffect } from 'react';
-import { set } from '#shared/set';
 import type { CoreComponent } from '#types/core';
 import { BehaviorContext } from '../../context/behavior.ts';
 import { useParamEval } from '../../hooks/use-param-eval.ts';
@@ -15,7 +14,6 @@ export const StateInsertion: CoreComponent<'State.Insertion', StateInsertionProp
   id,
   target,
   value,
-  to,
 }) => {
   const { elements } = useContext(BehaviorContext);
   const evaluateParam = useParamEval();
@@ -31,7 +29,7 @@ export const StateInsertion: CoreComponent<'State.Insertion', StateInsertionProp
       type: 'State.Insertion',
       actions: {
         run() {
-          if (!target || !to || !value) {
+          if (!target || !value) {
             return;
           }
 
@@ -42,13 +40,7 @@ export const StateInsertion: CoreComponent<'State.Insertion', StateInsertionProp
           }
 
           // @todo вынести structuredClone в зависимости
-          element.store.set(
-            set(
-              structuredClone(element.store.get()),
-              to,
-              fill(undefined, value.map(evaluateParam)),
-            ),
-          );
+          element.store.set(fill(structuredClone(element.store.get()), value.map(evaluateParam)));
         },
       },
     });
@@ -56,7 +48,7 @@ export const StateInsertion: CoreComponent<'State.Insertion', StateInsertionProp
     return () => {
       elements.delete(id);
     };
-  }, [id, target, value, to, elements, evaluateParam]);
+  }, [id, target, value, elements, evaluateParam]);
 
   return null;
 };
