@@ -16,6 +16,7 @@ export const StateRemoval: CoreComponent<'State.Removal', StateRemovalProps> = (
 }) => {
   const { elements } = useContext(BehaviorContext);
 
+  // @todo также зарегистрироваться для Action.Sequence?
   useEffect(() => {
     if (!id) {
       return;

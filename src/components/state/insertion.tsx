@@ -18,6 +18,7 @@ export const StateInsertion: CoreComponent<'State.Insertion', StateInsertionProp
 }) => {
   const { elements } = useContext(BehaviorContext);
 
+  // @todo также зарегистрироваться для Action.Sequence?
   useEffect(() => {
     if (!id) {
       return;

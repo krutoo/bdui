@@ -167,14 +167,9 @@ export function ExamplePage(): ReactNode {
             <Option value='baz'>Baz</Option>
           </Select>
 
-          <Condition if='{{valueOf("field_status") === "bar" | valueOf("field_status") === "baz"}}'>
+          <Condition if='{{valueOf("field_status") === "bar" || valueOf("field_status") === "baz"}}'>
             <Input placeholder='Reason...' name='reason' />
           </Condition>
-
-          <Action.Sequence id='handle_submit_done'>
-            <Action id='close_status_modal' type='close' target='status_modal' />
-            <Action id='invalidate_status_info' type='invalidate' target='status_info' />
-          </Action.Sequence>
         </Form>
 
         <Flex grow gap='8px'>
@@ -185,6 +180,11 @@ export function ExamplePage(): ReactNode {
             Cancel
           </Button>
         </Flex>
+
+        <Action.Sequence id='handle_submit_done'>
+          <Action type='invalidate' target='status_info' />
+          <Action type='close' target='status_modal' />
+        </Action.Sequence>
       </Modal>
     </PageLayout>
   );

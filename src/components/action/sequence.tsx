@@ -4,6 +4,11 @@ import { ActionSequenceContext, type ActionSequenceContextValue } from '../../co
 import { BehaviorContext } from '../../mod.ts';
 import type { ActionSequenceProps } from './types.ts';
 
+interface ActionInfo {
+  type: string;
+  target: string;
+}
+
 /**
  * Declares a chain of actions. Renders nothing.
  * On run will run child actions in order they declared.
@@ -15,7 +20,7 @@ export const ActionSequence: CoreComponent<'Action.Sequence', ActionSequenceProp
   children,
 }) => {
   const { elements } = useContext(BehaviorContext);
-  const order = useMemo(() => new Set<string>(), []);
+  const actions = useMemo(() => new Set<ActionInfo>(), []);
 
   useEffect(() => {
     if (!id) {
@@ -27,12 +32,8 @@ export const ActionSequence: CoreComponent<'Action.Sequence', ActionSequenceProp
       id,
       actions: {
         async run() {
-          const actions = [...order].map(actionId => elements.get(actionId));
-
           for (const action of actions) {
-            if (action?.type === 'Action') {
-              await action?.actions?.run?.();
-            }
+            await elements.get(action.target)?.actions[action.type]?.();
           }
         },
       },
@@ -41,19 +42,19 @@ export const ActionSequence: CoreComponent<'Action.Sequence', ActionSequenceProp
     return () => {
       elements.delete(id);
     };
-  }, [id, order, elements]);
+  }, [id, actions, elements]);
 
   const context = useMemo<ActionSequenceContextValue>(() => {
     return {
-      registerAction(actionId: string) {
-        order.add(actionId);
+      registerAction(action: ActionInfo) {
+        actions.add(action);
 
         return () => {
-          order.delete(actionId);
+          actions.delete(action);
         };
       },
     };
-  }, [order]);
+  }, [actions]);
 
   return <ActionSequenceContext value={context}>{children}</ActionSequenceContext>;
 };

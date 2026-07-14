@@ -48,12 +48,12 @@ export const Action: ActionComponent = ({ id, type, target: target }) => {
   }, [id, type, target, elements]);
 
   useEffect(() => {
-    if (!id) {
+    if (!type || !target) {
       return;
     }
 
-    return registerAction(id);
-  }, [id, registerAction]);
+    return registerAction({ type, target });
+  }, [type, target, registerAction]);
 
   return null;
 };
