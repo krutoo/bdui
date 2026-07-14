@@ -2,6 +2,7 @@ import { useContext, useEffect, useMemo } from 'react';
 import { createStore } from '@krutoo/utils/store';
 import type { CoreComponent } from '#types/core';
 import { BehaviorContext } from '../../context/behavior.ts';
+import { useParamEval } from '../../hooks/use-param-eval.ts';
 import { buildRequest } from '../../utils/build-request.ts';
 import type { QueryProps } from './types.ts';
 
@@ -17,6 +18,7 @@ export const Query: CoreComponent<'Query', QueryProps> = ({
   params,
 }: QueryProps) => {
   const { elements, dependencies } = useContext(BehaviorContext);
+  const evaluateParam = useParamEval();
   const { http } = dependencies;
   const { client } = http;
   const store = useMemo(() => createStore({ status: 'initial', data: null as any }), []);
@@ -39,7 +41,17 @@ export const Query: CoreComponent<'Query', QueryProps> = ({
 
     store.set({ status: 'pending', data: store.get().data });
 
-    const request = buildRequest(resource, { method, params });
+    const request = buildRequest(resource, {
+      method,
+      params: [
+        {
+          in: 'header',
+          key: 'content-type',
+          value: 'application/json',
+        },
+        ...(params?.map(evaluateParam) ?? []),
+      ],
+    });
 
     client
       .request(request.url, request)
@@ -51,7 +63,7 @@ export const Query: CoreComponent<'Query', QueryProps> = ({
       store.set({ status: 'initial', data: null });
       elements.delete(id);
     };
-  }, [id, method, resource, params, store, elements, client]);
+  }, [id, method, resource, params, store, elements, client, evaluateParam]);
 
   return null;
 };

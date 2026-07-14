@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useMemo, useSyncExternalStore } from 'react';
 import { createStore } from '@krutoo/utils/store';
+import { BehaviorContext } from '../context/behavior.ts';
 import { FormContext } from '../context/form.ts';
-import { BehaviorContext } from '../mod.ts';
 
 export interface UseFieldOptions {
   id?: string;

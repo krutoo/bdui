@@ -5,6 +5,9 @@ import { type Store, createStore } from '@krutoo/utils/store';
 import type { CoreComponent } from '#types/core';
 import { BehaviorContext } from '../../context/behavior.ts';
 import { FormContext, type FormContextValue } from '../../context/form.ts';
+import { useParamEval } from '../../hooks/use-param-eval.ts';
+import { type RequestParamDefinition } from '../../types/http.ts';
+import { buildRequest } from '../../utils/build-request.ts';
 import type { FormProps } from './types.ts';
 
 interface FormState {
@@ -27,6 +30,7 @@ export const Form: CoreComponent<'Form', FormProps> = props => {
   const { id, children } = props;
   const propsRef = useLatestRef(props);
   const { elements, dependencies } = useContext(BehaviorContext);
+  const evaluateParam = useParamEval();
   const { http } = dependencies;
   const { client } = http;
   const store = useMemo(() => createStore<FormState>({ status: 'initial', error: null }), []);
@@ -46,7 +50,7 @@ export const Form: CoreComponent<'Form', FormProps> = props => {
   });
 
   const submit = useStableCallback(async () => {
-    const { resource, method } = propsRef.current;
+    const { resource, method, params } = propsRef.current;
 
     if (!resource || store.get().status === 'pending') {
       return;
@@ -54,22 +58,29 @@ export const Form: CoreComponent<'Form', FormProps> = props => {
 
     try {
       // @todo paramPath который имеет приоритет над name и в котором может быть `foo.bar[2].baz`
-      const values = [...fields].reduce<Record<string, string>>((acc, field) => {
-        acc[field.name] = String(field.store.get().value);
-
-        return acc;
-      }, {});
+      const request = buildRequest(resource, {
+        method,
+        params: [
+          {
+            in: 'header',
+            key: 'content-type',
+            value: 'application/json',
+          },
+          ...[...fields].map<RequestParamDefinition>(field => ({
+            in: 'body',
+            key: field.name,
+            value: field.store.get().value,
+          })),
+          ...(params?.map(evaluateParam) ?? []),
+        ],
+      });
 
       store.set({
         status: 'pending',
         error: null,
       });
 
-      const response = await client.request(resource, {
-        method,
-        body: JSON.stringify(values),
-        headers: { 'content-type': 'application/json' },
-      });
+      const response = await client.request(resource, request);
 
       if (!response.ok) {
         throw new Error(`Server respond with status ${response.status}`);

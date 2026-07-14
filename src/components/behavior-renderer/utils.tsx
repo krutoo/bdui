@@ -1,7 +1,7 @@
 import { type ComponentType, type Key, type ReactNode, createElement } from 'react';
 import type { Element, Primitive } from '#types/dto';
 import { isExpressionNotation } from '../../hooks/use-evaluate.ts';
-import type { CoreComponent } from '../../mod.ts';
+import type { CoreComponent } from '../../types/core.ts';
 import { ExpressionInterceptor } from '../expression-interceptor/expression-interceptor.tsx';
 
 /**

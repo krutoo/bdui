@@ -1,7 +1,7 @@
 import { useContext, useEffect, useMemo } from 'react';
 import type { CoreComponent } from '#types/core';
 import { ActionSequenceContext, type ActionSequenceContextValue } from '../../context/action.ts';
-import { BehaviorContext } from '../../mod.ts';
+import { BehaviorContext } from '../../context/behavior.ts';
 import type { ActionSequenceProps } from './types.ts';
 
 interface ActionInfo {

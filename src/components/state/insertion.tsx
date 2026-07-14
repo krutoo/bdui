@@ -1,7 +1,8 @@
 import { useContext, useEffect } from 'react';
 import { set } from '#shared/set';
 import type { CoreComponent } from '#types/core';
-import { BehaviorContext } from '../../mod.ts';
+import { BehaviorContext } from '../../context/behavior.ts';
+import { useParamEval } from '../../hooks/use-param-eval.ts';
 import { fill } from '../../utils/param.ts';
 import type { StateInsertionProps } from './types.ts';
 
@@ -17,6 +18,7 @@ export const StateInsertion: CoreComponent<'State.Insertion', StateInsertionProp
   to,
 }) => {
   const { elements } = useContext(BehaviorContext);
+  const evaluateParam = useParamEval();
 
   // @todo также зарегистрироваться для Action.Sequence?
   useEffect(() => {
@@ -40,7 +42,13 @@ export const StateInsertion: CoreComponent<'State.Insertion', StateInsertionProp
           }
 
           // @todo вынести structuredClone в зависимости
-          element.store.set(set(structuredClone(element.store.get()), to, fill(undefined, value)));
+          element.store.set(
+            set(
+              structuredClone(element.store.get()),
+              to,
+              fill(undefined, value.map(evaluateParam)),
+            ),
+          );
         },
       },
     });
@@ -48,7 +56,7 @@ export const StateInsertion: CoreComponent<'State.Insertion', StateInsertionProp
     return () => {
       elements.delete(id);
     };
-  }, [id, target, value, to, elements]);
+  }, [id, target, value, to, elements, evaluateParam]);
 
   return null;
 };

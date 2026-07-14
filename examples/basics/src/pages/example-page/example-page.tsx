@@ -39,13 +39,13 @@ export function ExamplePage(): ReactNode {
 
           <Query id='users' resource='/api/users' />
 
-          <Condition if='{{statusOf("users") == "pending"}}'>
+          <Condition if='{{ statusOf("users") == "pending" }}'>
             <Text value='Loading...' />
           </Condition>
 
-          <Each of='{{dataOf("users")}}' as='$user'>
+          <Each of='{{ dataOf("users") }}' as='$user'>
             <Paragraph>
-              <Display of='{{$index + 1}}' />) <Display of='{{$user.firstname}}' />
+              <Display of='{{ $index + 1 }}' />) <Display of='{{ $user.firstname }}' />
             </Paragraph>
           </Each>
         </Widget>
@@ -103,17 +103,17 @@ export function ExamplePage(): ReactNode {
             ]}
           />
 
-          <Each of='{{stateOf("dynamic_form")}}'>
+          <Each of='{{ stateOf("dynamic_form") }}' indexAs='$i'>
             <Flex grow gap='10px'>
-              <Input placeholder='{{$item}}' />
+              <Input placeholder='{{ $item }}' />
 
-              <Condition if='{{stateOf("dynamic_form").length > 1}}'>
+              <Condition if='{{ stateOf("dynamic_form").length > 1 }}'>
                 <State.Removal
-                  id='{{concat("dynamic_form/remove_item:", $index)}}'
+                  id='{{ concat("dynamic_form/remove_item:", $i) }}'
                   target='dynamic_form'
-                  from='{{concat("[", $index, "]")}}'
+                  from='{{ concat("[", $i, "]") }}'
                 />
-                <Button action='run' actionTarget='{{concat("dynamic_form/remove_item:", $index)}}'>
+                <Button action='run' actionTarget='{{ concat("dynamic_form/remove_item:", $i) }}'>
                   Remove
                 </Button>
               </Condition>
@@ -121,11 +121,11 @@ export function ExamplePage(): ReactNode {
           </Each>
 
           <Flex gap='8px'>
-            <Condition if='{{stateOf("dynamic_form").length < 5}}'>
+            <Condition if='{{ stateOf("dynamic_form").length < 5 }}'>
               <State.Insertion
                 id='dynamic_form/add_field'
                 target='dynamic_form'
-                to='{{concat("[", stateOf("dynamic_form").length, "]")}}'
+                to='{{ concat("[", stateOf("dynamic_form").length, "]") }}'
                 value={[{ value: 'new' }]}
               />
               <Button action='run' actionTarget='dynamic_form/add_field'>
@@ -167,7 +167,7 @@ export function ExamplePage(): ReactNode {
             <Option value='baz'>Baz</Option>
           </Select>
 
-          <Condition if='{{valueOf("field_status") === "bar" || valueOf("field_status") === "baz"}}'>
+          <Condition if='{{ valueOf("field_status") === "bar" || valueOf("field_status") === "baz" }}'>
             <Input placeholder='Reason...' name='reason' />
           </Condition>
         </Form>

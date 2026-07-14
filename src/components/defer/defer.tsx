@@ -2,7 +2,8 @@ import { type ReactNode, useContext, useEffect, useMemo, useSyncExternalStore } 
 import { createStore } from '@krutoo/utils/store';
 import type { Element, Primitive } from '#types/dto';
 import { BehaviorContext } from '../../context/behavior.ts';
-import type { CoreComponent } from '../../mod.ts';
+import { useParamEval } from '../../hooks/use-param-eval.ts';
+import type { CoreComponent } from '../../types/core.ts';
 import { buildRequest } from '../../utils/build-request.ts';
 import { BehaviorRenderer } from '../behavior-renderer/mod.ts';
 import type { DeferProps } from './types.ts';
@@ -21,6 +22,7 @@ export const Defer: CoreComponent<'Defer', DeferProps> = ({
   children,
 }: DeferProps) => {
   const { elements, tasks, dependencies } = useContext(BehaviorContext);
+  const evaluateParam = useParamEval();
   const { http } = dependencies;
   const { retrieveReplacers } = http;
   const store = useMemo(() => createStore({ content: null as ReactNode }), []);
@@ -36,7 +38,14 @@ export const Defer: CoreComponent<'Defer', DeferProps> = ({
         type: 'fetch',
         request: buildRequest(resource, {
           method,
-          params,
+          params: [
+            {
+              in: 'header',
+              key: 'content-type',
+              value: 'application/json',
+            },
+            ...(params?.map(evaluateParam) ?? []),
+          ],
         }),
         async callback({ response }) {
           if (!response.ok) {
@@ -77,7 +86,7 @@ export const Defer: CoreComponent<'Defer', DeferProps> = ({
     return () => {
       elements.delete(id);
     };
-  }, [id, resource, method, params, elements, tasks, store, retrieveReplacers]);
+  }, [id, resource, method, params, elements, tasks, store, retrieveReplacers, evaluateParam]);
 
   return <>{state.content ?? children}</>;
 };
