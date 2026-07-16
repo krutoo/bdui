@@ -24,7 +24,7 @@ const COMPARISON_OPERATORS = ['==', '!=', '>', '<', '>=', '<='];
  * console.log(result); // 'guest'
  * ```
  */
-export function evaluate(expression: string, context: Record<string, any> = {}): any {
+export function evaluate(expression: string, context: Record<string, unknown> = {}): unknown {
   const tokens = tokenize(expression);
   let index = 0;
 
@@ -32,7 +32,7 @@ export function evaluate(expression: string, context: Record<string, any> = {}):
   const consume = () => tokens[index++];
 
   // 1. Логическое ИЛИ (||)
-  const parseOr = (): any => {
+  const parseOr = (): unknown => {
     let result = parseAnd();
 
     while (peek() === '||') {
@@ -45,7 +45,7 @@ export function evaluate(expression: string, context: Record<string, any> = {}):
   };
 
   // 2. Логическое И (&&)
-  const parseAnd = (): any => {
+  const parseAnd = (): unknown => {
     let result = parseComparison();
 
     while (peek() === '&&') {
@@ -58,7 +58,7 @@ export function evaluate(expression: string, context: Record<string, any> = {}):
   };
 
   // 3. Сравнение (==, !=, >, <, >=, <=)
-  const parseComparison = (): any => {
+  const parseComparison = (): unknown => {
     let result = parseSum();
 
     while (COMPARISON_OPERATORS.includes(peek()!)) {
@@ -70,13 +70,13 @@ export function evaluate(expression: string, context: Record<string, any> = {}):
       } else if (op === '!=') {
         result = result !== right;
       } else if (op === '>') {
-        result = result > right;
+        result = (result as number) > (right as number);
       } else if (op === '<') {
-        result = result < right;
+        result = (result as number) < (right as number);
       } else if (op === '>=') {
-        result = result >= right;
+        result = (result as number) >= (right as number);
       } else if (op === '<=') {
-        result = result <= right;
+        result = (result as number) <= (right as number);
       }
     }
 
@@ -84,7 +84,7 @@ export function evaluate(expression: string, context: Record<string, any> = {}):
   };
 
   // 4. Математика: Сложение и Вычитание (+, -)
-  const parseSum = (): any => {
+  const parseSum = (): unknown => {
     let result = parseProduct();
 
     while (peek() === '+' || peek() === '-') {
@@ -92,10 +92,10 @@ export function evaluate(expression: string, context: Record<string, any> = {}):
       const right = parseProduct();
 
       if (op === '+') {
-        result = result + right;
+        result = (result as number) + (right as number);
       }
       if (op === '-') {
-        result = result - right;
+        result = (result as number) - (right as number);
       }
     }
 
@@ -103,7 +103,7 @@ export function evaluate(expression: string, context: Record<string, any> = {}):
   };
 
   // 5. Математика: Умножение и Деление (*, /)
-  const parseProduct = (): any => {
+  const parseProduct = (): unknown => {
     let result = parsePrimary();
 
     while (peek() === '*' || peek() === '/') {
@@ -111,10 +111,10 @@ export function evaluate(expression: string, context: Record<string, any> = {}):
       const right = parsePrimary();
 
       if (op === '*') {
-        result = result * right;
+        result = (result as number) * (right as number);
       }
       if (op === '/') {
-        result = result / right;
+        result = (result as number) / (right as number);
       }
     }
 
@@ -122,7 +122,7 @@ export function evaluate(expression: string, context: Record<string, any> = {}):
   };
 
   // Вспомогательная функция для парсинга аргументов корневой функции
-  const parseArguments = (): any => {
+  const parseArguments = (): unknown[] => {
     consume(); // Пропускаем '('
 
     const args = [];
@@ -142,7 +142,7 @@ export function evaluate(expression: string, context: Record<string, any> = {}):
   };
 
   // 6. Базовые элементы
-  const parsePrimary = (): any => {
+  const parsePrimary = (): unknown => {
     const token = peek();
 
     if (!token) {
