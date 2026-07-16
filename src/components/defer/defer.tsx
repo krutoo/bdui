@@ -31,14 +31,7 @@ export const Defer: CoreComponent<'Defer', DeferProps> = ({
   const evaluateParam = useParamEval();
   const { http } = dependencies;
   const { retrieveReplacers } = http;
-  const store = useMemo(
-    () =>
-      createStore<DeferState>({
-        status: 'initial',
-        tree: null,
-      }),
-    [],
-  );
+  const store = useMemo(() => createStore<DeferState>({ status: 'initial', tree: null }), []);
   const state = useSyncExternalStore(store.subscribe, store.get, store.get);
 
   useEffect(() => {
@@ -46,7 +39,12 @@ export const Defer: CoreComponent<'Defer', DeferProps> = ({
       return;
     }
 
-    const query = () => {
+    const query = (options?: { flush?: boolean }) => {
+      store.set({
+        status: 'pending',
+        tree: options?.flush ? null : store.get().tree,
+      });
+
       tasks.enqueue({
         type: 'fetch',
         request: buildRequest(resource, {
@@ -89,21 +87,18 @@ export const Defer: CoreComponent<'Defer', DeferProps> = ({
       store,
       actions: {
         fill(tree: Element | Primitive) {
-          if (Object.is(tree, store.get().tree)) {
-            return;
+          if (!Object.is(tree, store.get().tree)) {
+            store.set({
+              status: store.get().status,
+              tree,
+            });
           }
-
-          store.set({
-            status: 'success',
-            tree,
-          });
         },
         invalidate() {
-          store.set({
-            status: 'pending',
-            tree: store.get().tree,
-          });
           query();
+        },
+        flush() {
+          query({ flush: true });
         },
       },
     });
@@ -115,7 +110,11 @@ export const Defer: CoreComponent<'Defer', DeferProps> = ({
     };
   }, [id, resource, method, params, elements, tasks, store, retrieveReplacers, evaluateParam]);
 
-  return <>{state.status === 'success' ? <BehaviorRenderer tree={state.tree} /> : children}</>;
+  if (state.tree === null || state.tree === undefined) {
+    return children;
+  }
+
+  return <BehaviorRenderer tree={state.tree} />;
 };
 
 Defer.displayName = 'Defer';

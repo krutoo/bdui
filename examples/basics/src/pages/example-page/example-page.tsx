@@ -42,6 +42,7 @@ export function ExamplePage(): ReactNode {
             <Button onClick='counter_inc'>+</Button>
           </Flex>
         </Widget>
+
         <Widget>
           <Heading level='2'>Defer markup</Heading>
           <Paragraph>They fetch markup by http and render children until response done</Paragraph>
@@ -211,7 +212,7 @@ export function ExamplePage(): ReactNode {
         </Flex>
 
         <Action.Sequence id='handle_submit_done'>
-          <Action type='invalidate' target='status_info' />
+          <Action type='flush' target='status_info' />
           <Action type='close' target='status_modal' />
         </Action.Sequence>
       </Modal>
