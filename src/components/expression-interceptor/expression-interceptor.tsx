@@ -6,9 +6,22 @@ import {
   useMemo,
   useState,
 } from 'react';
+import { useStableCallback } from '@krutoo/utils/react';
 import { BehaviorContext } from '../../context/behavior.ts';
 import { isExpressionNotation, useEvaluate } from '../../hooks/use-evaluate.ts';
 import type { ExpressionInterceptorProps } from './types.ts';
+
+interface UnknownProps extends Record<string, unknown> {}
+
+interface State {
+  actual?: boolean;
+  computed: null | UnknownProps;
+}
+
+const initialState: State = {
+  actual: false,
+  computed: null,
+};
 
 /**
  * Automatically replaces all expressions in props to its evaluation results.
@@ -16,39 +29,53 @@ import type { ExpressionInterceptorProps } from './types.ts';
  * @returns `ReactNode`.
  * @internal
  */
-export const ExpressionInterceptor = <T extends ComponentType<any>>({
+export const ExpressionInterceptor = <T extends ComponentType<object>>({
   component: Component,
   props,
 }: ExpressionInterceptorProps<T>): ReactNode => {
   const { events } = useContext(BehaviorContext);
+  const evaluate = useEvaluate();
+
+  const [state, setState] = useState<State>(initialState);
 
   const expressionKeys = useMemo(
-    () => Object.keys(props).filter(propKey => isExpressionNotation(props[propKey])),
+    () =>
+      Object.keys(props).filter(propKey => isExpressionNotation((props as UnknownProps)[propKey])),
     [props],
   );
 
-  const [computedProps, setComputedProps] = useState<null | typeof props>(null);
-  const evaluate = useEvaluate();
+  const evaluateProps = useStableCallback(() => {
+    const result: Record<string, unknown> = {};
+
+    expressionKeys.forEach(propKey => {
+      result[propKey] = evaluate((props as UnknownProps)[propKey] as string);
+    });
+
+    setState({
+      actual: true,
+      computed: result,
+    });
+  });
 
   useEffect(() => {
-    const sync = () => {
-      const resultProps = { ...props };
+    return events.anyStoreChanged.subscribe(() => {
+      setState(prev => ({
+        ...prev,
+        actual: false,
+      }));
+    });
+  }, [events, evaluateProps]);
 
-      expressionKeys.forEach(propKey => {
-        resultProps[propKey] = evaluate(props[propKey]);
-      });
+  useEffect(() => {
+    if (!state.actual) {
+      evaluateProps();
+    }
+  }, [state.actual, evaluateProps]);
 
-      setComputedProps(resultProps);
-    };
-
-    sync();
-
-    return events.anyStoreChanged.subscribe(sync);
-  }, [expressionKeys, events, props, evaluate]);
-
-  if (!computedProps) {
+  if (!state.computed) {
     return null;
   }
 
-  return <Component {...computedProps} />;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return <Component {...props} {...(state.computed as any)} />;
 };
