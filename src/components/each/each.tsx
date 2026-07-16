@@ -33,6 +33,9 @@ export const Each: CoreComponent<'Each', EachProps> = ({
 
         if (Array.isArray(found)) {
           setCollection(found);
+        } else {
+          // eslint-disable-next-line no-console
+          console.warn('[Each] non-iterable value received from expression:', found);
         }
       } catch (error) {
         // eslint-disable-next-line no-console
@@ -45,25 +48,21 @@ export const Each: CoreComponent<'Each', EachProps> = ({
     return events.anyStoreChanged.subscribe(sync);
   }, [events, expression, evaluate]);
 
-  return (
-    <>
-      {collection?.map((item, index) => (
-        // @todo подумать как быть с тем, что надо каждый раз не забывать докидывать extraContext
-        <ExpressionContext
-          key={index}
-          value={{
-            extraContext: {
-              ...extraContext,
-              [indexVarname]: index,
-              [itemVarname]: item,
-            },
-          }}
-        >
-          {children}
-        </ExpressionContext>
-      ))}
-    </>
-  );
+  return collection?.map((item, index) => (
+    // @todo подумать как быть с тем, что надо каждый раз не забывать докидывать extraContext
+    <ExpressionContext
+      key={index}
+      value={{
+        extraContext: {
+          ...extraContext,
+          [indexVarname]: index,
+          [itemVarname]: item,
+        },
+      }}
+    >
+      {children}
+    </ExpressionContext>
+  ));
 };
 
 Each.displayName = 'Each';
