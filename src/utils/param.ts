@@ -1,7 +1,7 @@
 import { set } from '#shared/set';
-import type { ParamDefinition, ParamType } from '#types/dto';
+import type { ParamDefinition, ParamType, Primitive } from '#types/dto';
 
-export const parsers: Record<ParamType, (value: unknown) => any> = {
+export const parsers: Record<ParamType, (value: unknown) => Primitive> = {
   int: value => parseInt(String(value), 10),
   float: value => parseFloat(String(value)),
   bool: value => value === 'true' || value === true,
@@ -15,18 +15,18 @@ export const parsers: Record<ParamType, (value: unknown) => any> = {
  * @param params Param definition list.
  * @returns Given value.
  */
-export function fill<T>(value: T, params: ParamDefinition[]): T {
+export function fill<T>(value: T | undefined | null, params: ParamDefinition[]): T {
   let result = value;
 
   for (let i = 0; i < params.length; i++) {
     const param = params[i]!;
 
     if (i === 0 && !param.key) {
-      result = parsers[param.type ?? 'string']?.(param.value);
+      result = parsers[param.type ?? 'string']?.(param.value) as T;
     } else if (param.key) {
       result = set(result, param.key, parsers[param.type ?? 'string']?.(param.value));
     }
   }
 
-  return result;
+  return result as T;
 }
