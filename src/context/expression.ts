@@ -8,3 +8,5 @@ export const ExpressionContext: Context<ExpressionContextValue> =
   createContext<ExpressionContextValue>({
     extraContext: {},
   });
+
+ExpressionContext.displayName = 'ExpressionContext';

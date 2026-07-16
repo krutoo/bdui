@@ -8,3 +8,5 @@ export interface FormContextValue {
 export const FormContext: Context<FormContextValue> = createContext<FormContextValue>({
   registerField: () => () => {},
 });
+
+FormContext.displayName = 'FormContext';

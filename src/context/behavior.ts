@@ -45,3 +45,5 @@ export const BehaviorContext: Context<BehaviorContextValue> = createContext<Beha
     },
   },
 });
+
+BehaviorContext.displayName = 'BehaviorContext';

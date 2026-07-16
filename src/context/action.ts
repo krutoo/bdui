@@ -8,3 +8,5 @@ export const ActionSequenceContext: Context<ActionSequenceContextValue> =
   createContext<ActionSequenceContextValue>({
     registerAction: () => () => {},
   });
+
+ActionSequenceContext.displayName = 'ActionSequenceContext';
