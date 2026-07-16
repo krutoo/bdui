@@ -20,17 +20,18 @@ export function useEvaluate(): (expression: string) => unknown {
   const { elements } = useContext(BehaviorContext);
   const { extraContext } = useContext(ExpressionContext);
 
+  // IMPORTANT: cannot use useStableCallback here because function must change when extraContext change
   return useCallback(
-    (expression: string) => {
+    (expression: string): unknown => {
       const cleanExpression = expression.replace(/^{{(.+)}}$/, '$1');
 
       const getState = <S = unknown>(targetId: string): S | undefined => {
         return elements.get(targetId)?.store?.get() as S | undefined;
       };
 
-      const basicContext = {
+      const builtinContext = {
         valueOf: (targetId: string) => {
-          return String(getState<{ value: string }>(targetId)?.value);
+          return String(getState<{ value: string }>(targetId)?.value ?? '');
         },
 
         dataOf: (targetId: string) => {
@@ -52,7 +53,7 @@ export function useEvaluate(): (expression: string) => unknown {
 
       const result = evaluate(cleanExpression, {
         ...extraContext,
-        ...basicContext,
+        ...builtinContext,
       });
 
       return result;
