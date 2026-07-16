@@ -37,8 +37,9 @@ export function Accordion({ id, children }: AccordionProps): ReactNode {
   const { open } = state;
 
   const setOpen = useCallback(
-    (value: boolean | ((open: boolean) => boolean)) =>
-      store.set({ open: typeof value === 'function' ? value(store.get().open) : value }),
+    (value: boolean | ((open: boolean) => boolean)) => {
+      store.set({ open: typeof value === 'function' ? value(store.get().open) : value });
+    },
     [store],
   );
 

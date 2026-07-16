@@ -1,4 +1,5 @@
-import { useCallback, useContext, useEffect, useMemo, useSyncExternalStore } from 'react';
+import { useContext, useEffect, useMemo, useSyncExternalStore } from 'react';
+import { useStableCallback } from '@krutoo/utils/react';
 import { createStore } from '@krutoo/utils/store';
 import { BehaviorContext } from '../context/behavior.ts';
 import { FormContext } from '../context/form.ts';
@@ -31,12 +32,9 @@ export function useFormField({ id, name, defaultValue }: UseFieldOptions): UseFi
 
   const state = useSyncExternalStore(store.subscribe, store.get, store.get);
 
-  const handleChange = useCallback(
-    (event: { target: { value: string } }): void => {
-      store.set({ value: event.target.value });
-    },
-    [store],
-  );
+  const handleChange = useStableCallback((event: { target: { value: string } }): void => {
+    store.set({ value: event.target.value });
+  });
 
   // register form field if name is defined
   useEffect(() => {
