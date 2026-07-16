@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import styles from './table.m.css';
 
 export interface TableProps {
-  children: ReactNode;
+  children?: ReactNode;
 }
 
 export function Table({ children }: TableProps) {

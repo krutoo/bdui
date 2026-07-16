@@ -4,7 +4,7 @@ import { createStubHttpClient } from '../utils/http-client.ts';
 import { TaskQueue } from '../utils/task-queue.ts';
 
 export interface BehaviorContextValue {
-  readonly components: Record<string, ComponentType<any> | undefined>;
+  readonly components: Record<string, ComponentType<Record<string, unknown>> | undefined>;
   readonly elements: ElementRegistry;
   readonly events: CoreEvents;
   readonly tasks: TaskQueue;

@@ -46,6 +46,7 @@ export function set<T, V>(target: T, path: string, value: V): T {
     return result;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let current: any = result;
 
   for (let i = 0; i < pathArray.length - 1; i++) {

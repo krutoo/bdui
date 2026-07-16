@@ -17,6 +17,7 @@ export function unset<T>(target: T, path: string): T {
     return target;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let current: any = target;
 
   for (let i = 0; i < pathArray?.length - 1; i++) {

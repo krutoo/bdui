@@ -18,6 +18,8 @@ export interface ElementRegistryItem<State = unknown> {
   type: string;
   id: string;
   store?: Store<State>;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   actions: Record<string, ((...args: any[]) => any) | undefined>;
 }
 

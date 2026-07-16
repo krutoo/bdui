@@ -1,12 +1,12 @@
 import { type Context, createContext } from 'react';
 
 export interface ExpressionContextValue {
-  extraContext: Record<string, any>;
+  extraContext: null | Record<string, unknown>;
 }
 
 export const ExpressionContext: Context<ExpressionContextValue> =
   createContext<ExpressionContextValue>({
-    extraContext: {},
+    extraContext: null,
   });
 
 ExpressionContext.displayName = 'ExpressionContext';

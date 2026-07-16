@@ -6,7 +6,7 @@ export interface BehaviorProviderProps {
    * Supported component map.
    * You need to extend `CoreComponents` to use core components.
    */
-  components: Record<string, ComponentType<any> | undefined>;
+  components: Record<string, ComponentType<Record<string, unknown>> | undefined>;
 
   /**
    * Typically in children somewhere you need to render `BehaviorRenderer`.

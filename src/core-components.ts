@@ -9,7 +9,7 @@ import { Query } from './components/query/mod.ts';
 import { State } from './components/state/mod.ts';
 
 export interface CoreComponentsMap {
-  [key: string]: ComponentType<object> | undefined;
+  [key: string]: ComponentType<Record<string, unknown>> | undefined;
 }
 
 export const CoreComponents: CoreComponentsMap = {

@@ -19,7 +19,7 @@ import { Text } from '#components/text/mod.ts';
 import { Widget } from '#components/widget/mod.ts';
 import './index.css';
 
-const components: Record<string, ComponentType<any> | undefined> = {
+const components: Record<string, ComponentType<Record<string, unknown>> | undefined> = {
   // core:
   ...CoreComponents,
 
@@ -53,15 +53,22 @@ createRoot(document.querySelector('#root')!).render(
   <BehaviorProvider
     components={components}
     http={{
-      retrieveReplacers: res =>
-        res.json().then(data =>
-          (data as any)?.ui?.replacers
-            ? Object.entries((data as any).ui.replacers).map(entry => ({
-                elementId: entry[0],
-                tree: entry[1] as Element | Primitive,
-              }))
-            : [],
-        ),
+      async retrieveReplacers(res) {
+        const data = (await res.json()) as {
+          ui?: {
+            replacers?: Record<string, Element | Primitive>;
+          };
+        };
+
+        if (!data.ui?.replacers) {
+          return [];
+        }
+
+        return Object.entries(data?.ui?.replacers).map(entry => ({
+          elementId: entry[0],
+          tree: entry[1] as Element | Primitive,
+        }));
+      },
     }}
   >
     <App />
