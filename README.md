@@ -18,7 +18,8 @@ First of all you need to prepare you frontend:
 ```tsx
 import { createRoot } from 'react-dom/client';
 import { BehaviorProvider, CoreComponents } from '@krutoo/bdui';
-import { App, Button, TextField, Typography } from '#components';
+import { Button, TextField, Typography } from '#components';
+import { App } from '#components/app';
 
 const components = {
   // core components:
@@ -295,7 +296,7 @@ Next you will see when it can be useful.
 
 ```tsx
 import { Display, Query } from '@krutoo/bdui';
-import { Heading, Spinner } from '#components';
+import { Spinner, Typography } from '#components';
 
 const markup = (
   <>
@@ -305,9 +306,9 @@ const markup = (
       <Spinner />
     </Condition>
 
-    <Heading>
+    <Typography>
       <Display of='{{ dataOf("profile_query").user_nickname }}' />
-    </Heading>
+    </Typography>
   </>
 );
 ```
