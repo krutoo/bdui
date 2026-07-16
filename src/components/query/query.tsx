@@ -1,10 +1,16 @@
 import { useContext, useEffect, useMemo } from 'react';
+import type { Status } from '@krutoo/utils';
 import { createStore } from '@krutoo/utils/store';
 import type { CoreComponent } from '#types/core';
 import { BehaviorContext } from '../../context/behavior.ts';
 import { useParamEval } from '../../hooks/use-param-eval.ts';
 import { buildRequest } from '../../utils/build-request.ts';
 import type { QueryProps } from './types.ts';
+
+interface QueryState {
+  status: Status;
+  data: unknown;
+}
 
 /**
  * Declarative HTTP-query. Renders nothing.
@@ -21,7 +27,7 @@ export const Query: CoreComponent<'Query', QueryProps> = ({
   const evaluateParam = useParamEval();
   const { http } = dependencies;
   const { client } = http;
-  const store = useMemo(() => createStore({ status: 'initial', data: null as any }), []);
+  const store = useMemo(() => createStore<QueryState>({ status: 'initial', data: null }), []);
 
   useEffect(() => {
     if (!id || !resource) {

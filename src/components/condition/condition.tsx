@@ -1,4 +1,5 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { useStableCallback } from '@krutoo/utils/react';
 import type { CoreComponent } from '#types/core';
 import { BehaviorContext } from '../../context/behavior.ts';
 import { useEvaluate } from '../../hooks/use-evaluate.ts';
@@ -18,20 +19,20 @@ export const Condition: CoreComponent<'Condition', ConditionProps> = ({
 
   const evaluate = useEvaluate();
 
-  const sync = useCallback(() => {
+  const sync = useStableCallback(() => {
     try {
       setShown(Boolean(evaluate(expression)));
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
     }
-  }, [expression, evaluate]);
+  });
 
   useEffect(() => {
     sync();
 
     return events.anyStoreChanged.subscribe(sync);
-  }, [sync, events]);
+  }, [events, sync]);
 
   if (!shown) {
     return;
