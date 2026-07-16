@@ -1,4 +1,5 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
+import { isShallowEqual } from '@krutoo/utils';
 import type { CoreComponent } from '#types/core';
 import { BehaviorContext } from '../../context/behavior.ts';
 import { ExpressionContext } from '../../context/expression.ts';
@@ -16,11 +17,21 @@ export const Each: CoreComponent<'Each', EachProps> = ({
   indexAs: indexVarname = '$index',
   children,
 }) => {
-  const { extraContext } = useContext(ExpressionContext);
   const { events } = useContext(BehaviorContext);
+  const { extraContext } = useContext(ExpressionContext);
+  const evaluate = useEvaluate();
+
   const [collection, setCollection] = useState<unknown[] | null>(null);
 
-  const evaluate = useEvaluate();
+  const items = useMemo<Record<string, unknown>[] | undefined>(
+    () =>
+      collection?.map((item, index) => ({
+        ...extraContext,
+        [indexVarname]: index,
+        [itemVarname]: item,
+      })),
+    [collection, extraContext, indexVarname, itemVarname],
+  );
 
   useEffect(() => {
     if (!expression) {
@@ -29,13 +40,13 @@ export const Each: CoreComponent<'Each', EachProps> = ({
 
     const sync = () => {
       try {
-        const found = evaluate(expression);
+        const next = evaluate(expression);
 
-        if (Array.isArray(found)) {
-          setCollection(found);
+        if (Array.isArray(next)) {
+          setCollection(prev => (isShallowEqual(prev, next) ? prev : next));
         } else {
           // eslint-disable-next-line no-console
-          console.warn('[Each] non-iterable value received from expression:', found);
+          console.warn('[Each] non-iterable value received from expression:', next);
         }
       } catch (error) {
         // eslint-disable-next-line no-console
@@ -48,18 +59,8 @@ export const Each: CoreComponent<'Each', EachProps> = ({
     return events.anyStoreChanged.subscribe(sync);
   }, [events, expression, evaluate]);
 
-  return collection?.map((item, index) => (
-    // @todo подумать как быть с тем, что надо каждый раз не забывать докидывать extraContext
-    <ExpressionContext
-      key={index}
-      value={{
-        extraContext: {
-          ...extraContext,
-          [indexVarname]: index,
-          [itemVarname]: item,
-        },
-      }}
-    >
+  return items?.map((item, index) => (
+    <ExpressionContext key={index} value={{ extraContext: item }}>
       {children}
     </ExpressionContext>
   ));
