@@ -9,7 +9,8 @@ import {
 import { useStableCallback } from '@krutoo/utils/react';
 import { BehaviorContext } from '../../context/behavior.ts';
 import { isExpressionNotation, useEvaluate } from '../../hooks/use-evaluate.ts';
-import type { ExpressionInterceptorProps } from './types.ts';
+import { useShallowEqual } from '../../hooks/use-shallow-equal.ts';
+import type { ExpressionInterceptorComponent, ExpressionInterceptorProps } from './types.ts';
 
 interface UnknownProps extends Record<string, unknown> {}
 
@@ -29,20 +30,23 @@ const initialState: State = {
  * @returns `ReactNode`.
  * @internal
  */
-export const ExpressionInterceptor = <T extends ComponentType<object>>({
+export const ExpressionInterceptor: ExpressionInterceptorComponent = <
+  T extends ComponentType<object>,
+>({
   component: Component,
   props,
 }: ExpressionInterceptorProps<T>): ReactNode => {
   const { events } = useContext(BehaviorContext);
   const evaluate = useEvaluate();
 
+  const stableProps = useShallowEqual(props);
   const [state, setState] = useState<State>(initialState);
 
-  const expressionKeys = useMemo(
-    () =>
-      Object.keys(props).filter(propKey => isExpressionNotation((props as UnknownProps)[propKey])),
-    [props],
-  );
+  const expressionKeys = useMemo(() => {
+    return Object.keys(stableProps).filter(key =>
+      isExpressionNotation((stableProps as UnknownProps)[key]),
+    );
+  }, [stableProps]);
 
   const evaluateProps = useStableCallback(() => {
     const result: Record<string, unknown> = {};
@@ -67,6 +71,13 @@ export const ExpressionInterceptor = <T extends ComponentType<object>>({
   }, [events, evaluateProps]);
 
   useEffect(() => {
+    setState(prev => ({
+      ...prev,
+      actual: false,
+    }));
+  }, [stableProps]);
+
+  useEffect(() => {
     if (!state.actual) {
       evaluateProps();
     }
@@ -79,3 +90,5 @@ export const ExpressionInterceptor = <T extends ComponentType<object>>({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return <Component {...props} {...(state.computed as any)} />;
 };
+
+ExpressionInterceptor.displayName = 'ExpressionInterceptor';
